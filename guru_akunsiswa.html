@@ -17,7 +17,7 @@
         <aside id="sidebar">
             <div class="d-flex justify-content-between p-4">
                 <div class="sidebar-logo">
-                   <img src="logo.png" alt="Logo Belajar.0">
+                    <img src="logo.png" alt="Logo Belajar.0">
                 </div>
                 <button class="toggle-btn border-0" type="button">
                     <i id="icon" class="bi bi-arrow-right-short text-white"></i>
@@ -163,83 +163,103 @@
                 </div>
             </nav>
             <main class="content px-3 py-4">
-                <div class="container-fluid">
-                    <div class="mb-3">
-                        <h3 class="fw-bold fs-4 mb-3">
-                            Admin Dashboard
-                        </h3>
-                        <div class="row">
-                            <div class="col-12 col-md-4">
-                                <div class="card shadow">
-                                    <div class="card-body py-4">
-                                        <h6 class="mb-2 fw-bold">
-                                            Member Progress
-                                        </h6>
-                                        <p class="fw-bold mb-2">
-                                            $89,1891
-                                        </p>
-                                        <div class="mb-0">
-                                            <span class="bagde text-light me-2">
-                                                +9.0%
-                                            </span>
-                                            <span class="fw-bold">
-                                                Since Last Month
-                                            </span>
-                                        </div>
-                                    </div>
+                <div class="card">
+                    <div class="card-header text-light" style="background-color: #0b1915;">
+                        Kelola data Siswa
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            <div class="mb-3 row">
+                                <label for="nim" class="col-sm-2 col-form-label">NIM</label>
+                                <div class="col-sm 10">
+                                    <input type="text" class="form-control" id="nim" name="nim"
+                                        value="<? php echo $nim ?>">
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <div class="card shadow">
-                                    <div class="card-body py-4">
-                                        <h6 class="mb-2 fw-bold">
-                                            Member Progress
-                                        </h6>
-                                        <p class="fw-bold mb-2">
-                                            $89,1891
-                                        </p>
-                                        <div class="mb-0">
-                                            <span class="bagde text-success me-2">
-                                                +9.0%
-                                            </span>
-                                            <span class="fw-bold">
-                                                Since Last Month
-                                            </span>
-                                        </div>
-                                    </div>
+                            <div class="mb-3 row">
+                                <label for="nama" class="col-sm-2 col-form-label">NAMA</label>
+                                <div class="col-sm 10">
+                                    <input type="text" class="form-control" id="nama" name="nama"
+                                        value="<? php echo $nama ?>">
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <div class="card shadow">
-                                    <div class="card-body py-4">
-                                        <h6 class="mb-2 fw-bold">
-                                            Member Progress
-                                        </h6>
-                                        <p class="fw-bold mb-2">
-                                            $89,1891
-                                        </p>
-                                        <div class="mb-0">
-                                            <span class="bagde text-success me-2">
-                                                +9.0%
-                                            </span>
-                                            <span class="fw-bold">
-                                                Since Last Month
-                                            </span>
-                                        </div>
-                                    </div>
+                            <div class="mb-3 row">
+                                <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
+                                <div class="col-sm 10">
+                                    <input type="text" class="form-control" id="alamat" name="alamat"
+                                        value="<? php echo $alamat ?>">
                                 </div>
                             </div>
+                            <div class="mb-3 row">
+                                <label for="fakultas" class="col-sm-2 col-form-label">fakultas</label>
+                                <div class="col-sm 10">
+                                    <select name="fakultas" id="fakultas" class="form-control">
+                                        <option value="">- Pilih Fakultas -</option>
+                                        <option value="saintek" <?php if($saintek=="saintek" ) echo "selected" ?> >-
+                                            Saintek -</option>
+                                        <option value="soshum" <?php if($soshum=="soshum" ) echo "selected" ?> >- soshum
+                                            -</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" name="simpan" class="btn btn-primary">
+                                    <i class="bi bi-floppy-fill"></i> 
+                                  </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header text-white" style="background-color: #0b1915;">
+                            Data Mahasiswa
                         </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">First</th>
+                                        <th scope="col">Last</th>
+                                        <th scope="col">Handle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
+                                            <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>Jacob</td>
+                                        <td>Thornton</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
+                                            <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="mb-3">
                         <div class="row">
-                            <div class="col-12 col-md-7">
-                                <h3 class="fw-bold fs-4 my-3">Users</h3>
+                            <div class="col-12">
+                                <h3 class="fw-bold fs-4 my-3">Kelola Akun Siswa</h3>
                                 <table class="table table-striped">
                                     <thead>
                                         <tr class="highlight">
-                                            <th scope="col">#</th>
-                                            <th scope="col">First</th>
-                                            <th scope="col">Last</th>
-                                            <th scope="col">Handle</th>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Nama Akun</th>
+                                            <th scope="col">Nama Lengkap Siswa</th>
+                                            <th scope="col">Password</th>
+                                            <th scope="col">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -248,29 +268,28 @@
                                             <td>Mark</td>
                                             <td>Otto</td>
                                             <td>@mdo</td>
+                                            <td>Hapus</td>
                                         </tr>
                                         <tr>
                                             <th scope="row">2</th>
                                             <td>Jacob</td>
                                             <td>Thornton</td>
                                             <td>@fat</td>
+                                            <td>Hapus</td>
                                         </tr>
                                         <tr>
                                             <th scope="row">3</th>
-                                            <td colspan="2">Larry the Bird</td>
+                                            <td>Larry the Bird</td>
                                             <td>@twitter</td>
+                                            <td>Iusp</td>
+                                            <td>Hapus</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-12 col-md-5">
-                                <h3 class="fw-bold fs-4 my-3">
-                                    Reports Overview
-                                </h3>
-                                <canvas id="bar-chart-grouped" width="800" height="450"></canvas>
-                            </div>
                         </div>
                     </div>
+                -->
                 </div>
             </main>
             <footer class="footer">

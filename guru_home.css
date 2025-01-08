@@ -183,7 +183,7 @@ a.sidebar-link:hover {
     width: 40px;
 }
 
-.card{
+.shadow{
     background-color: #fff;
     transition: .4s;
     cursor: pointer;
@@ -192,13 +192,13 @@ a.sidebar-link:hover {
     border-color: rgba(231, 234, 243. 0.7);
 }
 
-.card h6{
+.shadow h6{
     text-transform: uppercase;
     font-size: .7161rem;
     margin-bottom: .25rem;
 }
 
-.card:hover{
+.shadow:hover{
     background-color: #293b5f;
     color: #fff;
     transform: translateY(-10.5px);
