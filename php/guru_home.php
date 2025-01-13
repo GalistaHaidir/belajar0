@@ -2,8 +2,10 @@
 session_start();
 if(!isset($_SESSION['session_username'])){
     header("location:login.php");
-    exit();
 }
+
+$username = $_SESSION['admin_username'];
+
 ?>
 
 <!doctype html>
@@ -119,6 +121,7 @@ if(!isset($_SESSION['session_username'])){
                         </li>
                     </ul>
                 </li>
+                <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
                 <li class="sidebar-item">
                     <a href="guru_siswa.html" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#auth5" aria-expanded="false" aria-controls="auth5">
@@ -127,7 +130,7 @@ if(!isset($_SESSION['session_username'])){
                     </a>
                     <ul id="auth5" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="guru_akunsiswa.html" class="sidebar-link">
+                            <a href="guru_akunsiswa.php" class="sidebar-link">
                                 Kelola Akun Siswa
                             </a>
                         </li>
@@ -137,6 +140,7 @@ if(!isset($_SESSION['session_username'])){
                             </a>
                         </li>
                     </ul>
+                    <?php } ?>
                 </li>
             </ul>
             <div class="sidebar-footer mb-1">
@@ -148,7 +152,7 @@ if(!isset($_SESSION['session_username'])){
         </aside>
         <div class="main">
             <nav class="navbar navbar-expand px-4 py-3">
-                <h3 class="fw-bold">Hi, Admin</h3>
+                <h3 class="fw-bold" style="text-transform: capitalize;">Hi, <?= $username; ?></h3>
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">

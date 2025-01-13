@@ -1,63 +1,84 @@
 <?php
 session_start();
 include("koneksi.php");
-//variable
+
+// Variabel
 $error = "";
 $username = "";
 $password = "";
 $ingat = "";
 
-if(isset($_COOKIE['cookie_username'])){
+if (isset($_COOKIE['cookie_username'])) {
     $cookie_username = $_COOKIE['cookie_username'];
     $cookie_password = $_COOKIE['cookie_password'];
     
     $sql1 = "SELECT * FROM pengguna WHERE username = '$cookie_username'";
     $q1 = mysqli_query($koneksi, $sql1);
     $r1 = mysqli_fetch_array($q1);
-    if($r1['password'] == $cookie_password){
+    if ($r1['password'] == $cookie_password) {
         $_SESSION['session_username'] = $cookie_username;
         $_SESSION['session_password'] = $cookie_password;
     }
 }
 
-if(isset($_POST['login'])){
-    $username   = $_POST['username'];
-    $password   = $_POST['password'];
-    // $ingat      = $_POST['ingat'];
+if (isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    // $ingat = $_POST['ingat'];
 
-    if($username == '' or $password == ''){
+    if ($username == '' || $password == '') {
         $error .= "<li>Silahkan masukkan username dan juga password.</li>";
-    }else{
+    } else {
         $sql1 = "SELECT * FROM pengguna WHERE username = '$username'";
         $q1 = mysqli_query($koneksi, $sql1);
         $r1 = mysqli_fetch_array($q1);
 
-        if($r1['username'] == ''){
+        if ($r1['username'] == '') {
             $error .= "<li>Username <b>$username</b> tidak tersedia.</li>";
-        }elseif($r1['password'] != md5($password)){
+        } elseif ($r1['password'] != md5($password)) {
             $error .= "<li>Password yang dimasukkan tidak sesuai.</li>";
         }
-        if(empty($error)){
+
+        if (empty($error)) {
             $_SESSION['session_username'] = $username;
             $_SESSION['session_password'] = md5($password);
-            
-            if($ingat == 1){
-                $cookie_name = "cookie_username";
-                $cookie_value = $username;
-                $cookie_time = time() + (60 * 60 * 24 * 7);
-                setcookie($cookie_name,$cookie_value,$cookie_time,"/");
+            $id_pengguna = $r1['id_pengguna'];
 
-                $cookie_name = "cookie_password";
-                $cookie_value = md5($password);
-                $cookie_time = time() + (60 * 60 * 24 * 7);
-                setcookie($cookie_name,$cookie_value,$cookie_time,"/");
+            // Memeriksa akses pengguna
+            $sql2 = "SELECT * FROM akses WHERE id_pengguna = '$id_pengguna'";
+            $q2 = mysqli_query($koneksi, $sql2);
+            $akses = [];
+            while ($r2 = mysqli_fetch_array($q2)) {
+                $akses[] = $r2['id_master'];
             }
-            
-            header("location:guru_home.php");
+
+            if (empty($akses)) {
+                $error .= "<li>Kamu tidak punya akses ke halaman ini</li>";
+            } else {
+                $_SESSION['admin_username'] = $username;
+                $_SESSION['id_pengguna'] = $id_pengguna;
+                $_SESSION['akses'] = $akses;
+
+                // Menyimpan cookie jika diinginkan
+                if ($ingat == 1) {
+                    $cookie_name = "cookie_username";
+                    $cookie_value = $username;
+                    $cookie_time = time() + (60 * 60 * 24 * 7);
+                    setcookie($cookie_name, $cookie_value, $cookie_time, "/");
+
+                    $cookie_name = "cookie_password";
+                    $cookie_value = md5($password);
+                    setcookie($cookie_name, $cookie_value, $cookie_time, "/");
+                }
+
+                header("location:guru_home.php");
+                exit();
+            }
         }
     }
 }
 ?>
+
 <!doctype html>
 <html lang="en">
 
