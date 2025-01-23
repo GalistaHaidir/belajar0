@@ -90,7 +90,7 @@ if (isset($_POST['submit'])) { // create
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home</title>
+    <title>Kelola Akun Siswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -117,25 +117,43 @@ if (isset($_POST['submit'])) { // create
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="guru_materi.php" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#auth1" aria-expanded="false" aria-controls="auth1">
                         <i class="bi bi-file-earmark-code-fill"></i>
                         <span>Materi</span>
                     </a>
                     <ul id="auth1" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="guru_materi.php" class="sidebar-link">
-                                Kelola Materi
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                Unggah Materi
-                            </a>
-                        </li>
+                        <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
+                            <li class="sidebar-item">
+                                <a href="kelola_materi.php" class="sidebar-link">
+                                    Kelola Materi
+                                </a>
+                            </li>
+                        <?php } ?>
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link">
-                                Kelompokkan Materi
+                                Materi
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#auth3" aria-expanded="false" aria-controls="auth3">
+                        <i class="bi bi-play-btn-fill"></i>
+                        <span>Vidio Tutorial</span>
+                    </a>
+                    <ul id="auth3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
+                            <li class="sidebar-item">
+                                <a href="kelola_video.php" class="sidebar-link">
+                                    Kelola Materi
+                                </a>
+                            </li>
+                        <?php } ?>
+                        <li class="sidebar-item">
+                            <a href="video_tutorial.php" class="sidebar-link">
+                                Materi
                             </a>
                         </li>
                     </ul>
@@ -160,12 +178,12 @@ if (isset($_POST['submit'])) { // create
                     </ul>
                 </li>
                 <li class="sidebar-item">
-                    <a href="guru_tugas.php" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth3" aria-expanded="false" aria-controls="auth3">
+                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                        data-bs-target="#auth4" aria-expanded="false" aria-controls="auth4">
                         <i class="bi bi-list-check"></i>
                         <span>Tugas</span>
                     </a>
-                    <ul id="auth3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <ul id="auth4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link">
                                 Kelola Tugas
@@ -178,44 +196,14 @@ if (isset($_POST['submit'])) { // create
                         </li>
                     </ul>
                 </li>
-                <li class="sidebar-item">
-                    <a href="guru_evaluasi.php" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth4" aria-expanded="false" aria-controls="auth4">
-                        <i class="bi bi-journal-text"></i>
-                        <span>Evaluasi</span>
-                    </a>
-                    <ul id="auth4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                poe
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                eop
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="guru_siswa.php" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth5" aria-expanded="false" aria-controls="auth5">
-                        <i class="bi bi-person-arms-up"></i>
-                        <span>Siswa</span>
-                    </a>
-                    <ul id="auth5" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="guru_akunsiswa.php" class="sidebar-link">
-                                Kelola Akun Siswa
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                eop
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
+                    <li class="sidebar-item">
+                        <a href="guru_akunsiswa.php" class="sidebar-link">
+                            <i class="bi bi-person-arms-up"></i>
+                            <span>Siswa</span>
+                        </a>
+                    <?php } ?>
+                    </li>
             </ul>
             <div class="sidebar-footer mb-1">
                 <a href="logout.php" class="sidebar-link">
