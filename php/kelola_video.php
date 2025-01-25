@@ -107,145 +107,14 @@ if (isset($_POST['submit'])) {
 
 <body>
     <div class="wrapper">
-        <aside id="sidebar">
-            <div class="d-flex justify-content-between p-4">
-                <div class="sidebar-logo">
-                    <img src="logo.png" alt="Logo Belajar.0">
-                </div>
-                <button class="toggle-btn border-0" type="button">
-                    <i id="icon" class="bi bi-arrow-right-short text-white"></i>
-                </button>
-            </div>
-            <ul class="sidebar-nav">
-                <li class="sidebar-item">
-                    <a href="guru_home.php" class="sidebar-link">
-                        <i class="bi bi-house-door-fill"></i>
-                        <span>Halaman Utama</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth1" aria-expanded="false" aria-controls="auth1">
-                        <i class="bi bi-file-earmark-code-fill"></i>
-                        <span>Materi</span>
-                    </a>
-                    <ul id="auth1" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                            <li class="sidebar-item">
-                                <a href="kelola_materi.php" class="sidebar-link">
-                                    Kelola Materi
-                                </a>
-                            </li>
-                        <?php } ?>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                Materi
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth3" aria-expanded="false" aria-controls="auth3">
-                        <i class="bi bi-play-btn-fill"></i>
-                        <span>Vidio Tutorial</span>
-                    </a>
-                    <ul id="auth3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                            <li class="sidebar-item">
-                                <a href="kelola_video.php" class="sidebar-link">
-                                    Kelola Materi
-                                </a>
-                            </li>
-                        <?php } ?>
-                        <li class="sidebar-item">
-                            <a href="video_tutorial.php" class="sidebar-link">
-                                Materi
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth2" aria-expanded="false" aria-controls="auth2">
-                        <i class="bi bi-pencil-fill"></i>
-                        <span>Soal</span>
-                    </a>
-                    <ul id="auth2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                Bank Soal
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                eop
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth4" aria-expanded="false" aria-controls="auth4">
-                        <i class="bi bi-list-check"></i>
-                        <span>Tugas</span>
-                    </a>
-                    <ul id="auth4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                Kelola Tugas
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
-                                eop
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                    <li class="sidebar-item">
-                        <a href="guru_akunsiswa.php" class="sidebar-link">
-                            <i class="bi bi-person-arms-up"></i>
-                            <span>Siswa</span>
-                        </a>
-                    <?php } ?>
-                    </li>
-            </ul>
-            <div class="sidebar-footer mb-1">
-                <a href="logout.php" class="sidebar-link">
-                    <i class="bi bi-door-open-fill"></i>
-                    <span>Keluar</span>
-                </a>
-            </div>
-        </aside>
+        <?php include 'sidebar.php'; ?>
         <div class="main">
-            <nav class="navbar navbar-expand px-4 py-3">
-                <h3 class="fw-bold" style="text-transform: capitalize;">Hi, <?= $sessionUsername; ?></h3>
-                <div class="navbar-collapse collapse">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown">
-                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                                <img src="cover.jpg" class="avatar omg-fluid" alt="">
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end rounded-0 border-0 shadow mt-3">
-                                <a href="#" class="dropdown-item">
-                                    <i class="bi bi-person-fill"></i>
-                                    <span>Akun</span>
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-item">
-                                    <i class="bi bi-door-open-fill"></i>
-                                    <span>Keluar</span>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <div class="card">
-                    <div class="card-header text-light" style="background-color: #0b1915;">
+
+                <!-- Card: Kelola Video -->
+                <div class="card" style="border-radius: 20px;">
+                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
                         Kelola Video
                     </div>
                     <div class="card-body">
@@ -297,56 +166,55 @@ if (isset($_POST['submit'])) {
                             </div>
                         </form>
                     </div>
-
-                    <div class="card">
-                        <div class="card-header text-white" style="background-color: #0b1915;">
-                            Data Video
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered">
-                                <thead>
+                </div>
+                <div class="card mt-4" style="border-radius: 20px;">
+                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                        Data Video
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Judul</th>
+                                    <th scope="col">Deskripsi</th>
+                                    <th scope="col">Video</th>
+                                    <th scope="col">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $sql2 = "SELECT * FROM tbl_video ORDER BY id DESC";
+                                $q2 = mysqli_query($koneksi, $sql2);
+                                $urut = 1;
+                                while ($r2 = mysqli_fetch_array($q2)) {
+                                    $id          = $r2['id'];
+                                    $title       = $r2['title'];
+                                    $description = $r2['description'];
+                                    $file_path   = $r2['file_path'];
+                                ?>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Judul</th>
-                                        <th scope="col">Deskripsi</th>
-                                        <th scope="col">Video</th>
-                                        <th scope="col">Aksi</th>
+                                        <th scope="row"><?php echo $urut++ ?></th>
+                                        <td><?php echo $title ?></td>
+                                        <td><?php echo $description ?></td>
+                                        <td>
+                                            <video width="150" controls>
+                                                <source src="<?php echo $file_path ?>" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </td>
+                                        <td>
+                                            <a href="kelola_video.php?op=edit&id=<?php echo $id ?>">
+                                                <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
+                                            </a>
+                                            <a href="kelola_video.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus video ini?')">
+                                                <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                            </a>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql2 = "SELECT * FROM tbl_video ORDER BY id DESC";
-                                    $q2 = mysqli_query($koneksi, $sql2);
-                                    $urut = 1;
-                                    while ($r2 = mysqli_fetch_array($q2)) {
-                                        $id          = $r2['id'];
-                                        $title       = $r2['title'];
-                                        $description = $r2['description'];
-                                        $file_path   = $r2['file_path'];
-                                    ?>
-                                        <tr>
-                                            <th scope="row"><?php echo $urut++ ?></th>
-                                            <td><?php echo $title ?></td>
-                                            <td><?php echo $description ?></td>
-                                            <td>
-                                                <video width="150" controls>
-                                                    <source src="<?php echo $file_path ?>" type="video/mp4">
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            </td>
-                                            <td>
-                                                <a href="kelola_video.php?op=edit&id=<?php echo $id ?>">
-                                                    <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
-                                                </a>
-                                                <a href="kelola_video.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus video ini?')">
-                                                    <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </main>

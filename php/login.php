@@ -71,7 +71,7 @@ if (isset($_POST['login'])) {
                     setcookie($cookie_name, $cookie_value, $cookie_time, "/");
                 }
 
-                header("location:guru_home.php");
+                header("location:halaman_utama.php");
                 exit();
             }
         }
