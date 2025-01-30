@@ -171,7 +171,7 @@ if (isset($_POST['submit'])) {
                     <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
                         Data Video
                     </div>
-                    <div class="card-body">
+                    <div style="max-height: 350px; overflow-y: auto;">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>

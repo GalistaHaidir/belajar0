@@ -176,48 +176,51 @@ if (isset($_POST['submit'])) {
                         Data Materi
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Deskripsi Materi</th>
-                                    <th scope="col">Capaian Pembelajaran</th>
-                                    <th scope="col">File Materi</th>
-                                    <th scope="col">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $sql2 = "SELECT * FROM materi ORDER BY id DESC";
-                                $q2 = mysqli_query($koneksi, $sql2);
-                                $urut = 1;
-                                while ($r2 = mysqli_fetch_array($q2)) {
-                                    $id          = $r2['id'];
-                                    $title       = $r2['title'];
-                                    $description = $r2['description'];
-                                    $file_path   = $r2['file_path'];
-                                ?>
+                        <!-- Add a wrapper div for the table -->
+                        <div style="max-height: 350px; overflow-y: auto;">
+                            <table class="table table-bordered">
+                                <thead>
                                     <tr>
-                                        <th scope="row"><?php echo $urut++ ?></th>
-                                        <td><?php echo $title ?></td>
-                                        <td><?php echo $description ?></td>
-                                        <td>
-                                            <a href="<?php echo $file_path ?>" target="_blank">
-                                                <button type="button" class="btn btn-primary">View PDF</button>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="kelola_materi.php?op=edit&id=<?php echo $id ?>">
-                                                <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
-                                            </a>
-                                            <a href="kelola_materi.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus PDF ini?')">
-                                                <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
-                                            </a>
-                                        </td>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Deskripsi Materi</th>
+                                        <th scope="col">Capaian Pembelajaran</th>
+                                        <th scope="col">File Materi</th>
+                                        <th scope="col">Aksi</th>
                                     </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $sql2 = "SELECT * FROM materi ORDER BY id DESC";
+                                    $q2 = mysqli_query($koneksi, $sql2);
+                                    $urut = 1;
+                                    while ($r2 = mysqli_fetch_array($q2)) {
+                                        $id          = $r2['id'];
+                                        $title       = $r2['title'];
+                                        $description = $r2['description'];
+                                        $file_path   = $r2['file_path'];
+                                    ?>
+                                        <tr>
+                                            <th scope="row"><?php echo $urut++ ?></th>
+                                            <td><?php echo $title ?></td>
+                                            <td><?php echo $description ?></td>
+                                            <td>
+                                                <a href="<?php echo $file_path ?>" target="_blank">
+                                                    <button type="button" class="btn btn-primary">View PDF</button>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="kelola_materi.php?op=edit&id=<?php echo $id ?>">
+                                                    <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
+                                                </a>
+                                                <a href="kelola_materi.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus PDF ini?')">
+                                                    <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
