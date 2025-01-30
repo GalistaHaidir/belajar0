@@ -17,7 +17,7 @@
         <aside id="sidebar">
             <div class="d-flex justify-content-between p-4">
                 <div class="sidebar-logo">
-                   <img src="logo.png" alt="Logo Belajar.0">
+                    <img src="logo.png" alt="Logo Belajar.0">
                 </div>
                 <button class="toggle-btn border-0" type="button">
                     <i id="icon" class="bi bi-arrow-right-short text-white"></i>
@@ -139,13 +139,15 @@
             </div>
         </aside>
         <div class="main">
-            <nav class="navbar navbar-expand px-4 py-3">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand px-4 py-3 bg-light">
                 <h3 class="fw-bold">Hi, Admin</h3>
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
                             <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                                <img src="cover.jpg" class="avatar omg-fluid" alt="">
+                                <img src="cover.jpg" class="avatar img-fluid rounded-circle" alt="Profile Picture"
+                                    style="width: 40px; height: 40px;">
                             </a>
                             <div class="dropdown-menu dropdown-menu-end rounded-0 border-0 shadow mt-3">
                                 <a href="#" class="dropdown-item">
@@ -162,12 +164,61 @@
                     </ul>
                 </div>
             </nav>
+
+            <!-- Main Content -->
             <main class="content px-3 py-4">
                 <div class="container-fluid">
-                    <h1>Ini halaman Guru Materi</h1>
+                    <h1 class="mb-4">Lihat Profil</h1>
+                    <div class="row justify-content-center">
+                        <!-- Card Foto Profil -->
+                        <div class="col-md-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <img src="profile.jpg" class="img-fluid mb-3" alt="Profile Picture"
+                                        style="max-width: 500px; max-height: 300px;">
+                                    <h5 class="card-title">Admin</h5>
+                                    <p class="text-muted">Administrator</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Informasi Profil -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    <h4>Informasi Profil</h4>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <strong>Nama:</strong> Admin
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>Email:</strong> admin@example.com
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>Password:</strong> ********
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>Role:</strong> Administrator
+                                        </li>
+                                        <li class="list-group-item">
+                                            <strong>Terdaftar Sejak:</strong> 01 Januari 2023
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <a href="#" class="btn btn-primary">Edit Profil</a>
+                                    <a href="#" class="btn btn-danger">Keluar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </main>
-            <footer class="footer">
+
+            <!-- Footer -->
+            <footer class="footer mt-4">
                 <div class="container-fluid">
                     <div class="row text-body-secondary">
                         <div class="col-6 text-start">

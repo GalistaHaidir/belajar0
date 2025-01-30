@@ -8,32 +8,64 @@ $nomorTlpn      = "";
 $email          = "";
 $username       = "";
 $password       = "";
-$ulangPassword   = "";
+$ulangPassword  = "";
+$fotoProfil     = "";
+
 $sukses         = "";
 $error          = "";
 
-if(isset($_POST['submit'])){
+if (isset($_POST['submit'])) {
     $namaLengkap    = $_POST['namaLengkap'];
     $nomorTlpn      = $_POST['nomorTlpn'];
     $email          = $_POST['email'];
     $username       = $_POST['username'];
     $password       = $_POST['password'];
-    $ulangPassword   = $_POST['ulangPassword'];
+    $ulangPassword  = $_POST['ulangPassword'];
+    $fotoProfil     = ""; // Default kosong
 
-    if($namaLengkap && $nomorTlpn && $email && $username && $password && $ulangPassword){
+    if ($namaLengkap && $nomorTlpn && $email && $username && $password && $ulangPassword) {
         // Validasi apakah password dan ulangi password sama
-        if($password === $ulangPassword){
-            // Hash password menggunakan MD5
+        if ($password === $ulangPassword) {
+            // Hash password menggunakan MD5 (disarankan gunakan bcrypt di masa depan)
             $passwordHash = md5($password);
 
-            // Query langsung tanpa prepared statements
-            $sql1 = "INSERT INTO pengguna (namaLengkap, nomorTlpn, email, username, password) VALUES ('$namaLengkap', '$nomorTlpn', '$email', '$username', '$passwordHash')";
-            $q1 = mysqli_query($koneksi, $sql1);
+            // Proses upload foto profil
+            if (!empty($_FILES["fotoProfil"]["name"])) {
+                $targetDir = "profile/"; // Folder penyimpanan
+                $fileName = basename($_FILES["fotoProfil"]["name"]);
+                $targetFilePath = $targetDir . $fileName;
+                $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
 
-            if($q1){
-                $sukses = "Anda berhasil mendaftar";
-            } else {
-                $error = "Anda gagal mendaftar: " . mysqli_error($koneksi);
+                // Validasi format file
+                $allowedTypes = array("jpg", "jpeg", "png", "gif");
+                if (in_array($fileType, $allowedTypes)) {
+                    // Cek ukuran file (maksimal 2MB)
+                    if ($_FILES["fotoProfil"]["size"] <= 2097152) {
+                        // Upload file ke folder uploads
+                        if (move_uploaded_file($_FILES["fotoProfil"]["tmp_name"], $targetFilePath)) {
+                            $fotoProfil = $fileName; // Simpan nama file ke database
+                        } else {
+                            $error = "Gagal mengunggah foto profil.";
+                        }
+                    } else {
+                        $error = "Ukuran file terlalu besar (maks 2MB).";
+                    }
+                } else {
+                    $error = "Format file tidak valid (gunakan JPG, JPEG, PNG, atau GIF).";
+                }
+            }
+
+            // Jika tidak ada error, simpan ke database
+            if (empty($error)) {
+                $sql1 = "INSERT INTO pengguna (namaLengkap, nomorTlpn, email, username, password, fotoProfil) 
+                         VALUES ('$namaLengkap', '$nomorTlpn', '$email', '$username', '$passwordHash', '$fotoProfil')";
+                $q1 = mysqli_query($koneksi, $sql1);
+
+                if ($q1) {
+                    $sukses = "Anda berhasil mendaftar";
+                } else {
+                    $error = "Anda gagal mendaftar: " . mysqli_error($koneksi);
+                }
             }
         } else {
             $error = "Password dan Ulangi Password tidak cocok.";
@@ -43,6 +75,7 @@ if(isset($_POST['submit'])){
     }
 }
 ?>
+
 
 <!doctype html>
 <html lang="en">
@@ -87,23 +120,20 @@ if(isset($_POST['submit'])){
             <h3 class="px-3 pt-3">Daftar Akun</h3>
             <hr>
 
-            <form class="px-3 py-1"  method="POST">
-                <?php if($error){ ?>
+            <form class="px-3 py-1" method="POST" enctype="multipart/form-data"> <!-- Tambahkan enctype="multipart/form-data" -->
+                <?php if ($error) { ?>
                     <div id="login-alert" class="alert alert-danger col-sm-12">
                         <ul><?php echo $error ?></ul>
                     </div>
-                    <?php 
-                    header("refresh:5;url=register.php");
-                    ?>
+                    <?php header("refresh:5;url=register.php"); ?>
                 <?php } ?>
-                <?php if($sukses){ ?>
+                <?php if ($sukses) { ?>
                     <div id="login-alert" class="alert alert-success col-sm-12">
                         <ul><?php echo $sukses ?></ul>
                     </div>
-                    <?php 
-                    header("refresh:5;url=login.php");
-                    ?>
+                    <?php header("refresh:5;url=login.php"); ?>
                 <?php } ?>
+
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-warning border border-warning" style="width: auto;">
                         <i class="bi bi-person-fill"></i> <!--icons-->
@@ -134,29 +164,41 @@ if(isset($_POST['submit'])){
 
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-warning border border-warning">
-                       <i class="bi bi-shield-lock-fill"></i><!-- Icon -->
+                        <i class="bi bi-shield-lock-fill"></i><!-- Icon -->
                     </span>
                     <input type="password" class="form-control" id="password" placeholder="Password" name="password">
-                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword1">
                         <i class="bi bi-eye-slash text-white"></i>
                     </button>
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-warning border border-warning">
-                       <i class="bi bi-shield-lock-fill"></i><!-- Icon -->
+                        <i class="bi bi-shield-lock-fill"></i><!-- Icon -->
                     </span>
-                    <input type="password" class="form-control" id="ulangPassword" placeholder="Ulangi Password"
-                        name="ulangPassword">
-                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                    <input type="password" class="form-control" id="ulangPassword" placeholder="Ulangi Password" name="ulangPassword">
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword2">
                         <i class="bi bi-eye-slash text-white"></i>
                     </button>
+                </div>
+
+
+                <!-- Input untuk Foto Profil -->
+                <div class="mb-3">
+                    <label for="fotoProfil" class="form-label fw-bold">Unggah Foto Profil</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-warning border border-warning">
+                            <i class="bi bi-camera-fill"></i> <!-- Icon Kamera -->
+                        </span>
+                        <input type="file" class="form-control" name="fotoProfil" id="fotoProfil" accept="image/*">
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-end">
                     <button type="submit" name="submit" class="btn btn-warning" style="width: 100px;">Daftar</button>
                 </div>
             </form>
+
             <hr>
 
             <div class="text-center mb-4">
@@ -167,20 +209,37 @@ if(isset($_POST['submit'])){
 
 
     <script>
-        const togglePassword = document.querySelector("#togglePassword");
-        const passwordInput = document.querySelector("#password");
+        document.getElementById("togglePassword1").addEventListener("click", function() {
+            let passwordInput = document.getElementById("password");
+            let icon = this.querySelector("i");
 
-        togglePassword.addEventListener("click", function () {
-            // Toggle the type attribute
-            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-            passwordInput.setAttribute("type", type);
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        });
 
-            // Toggle the icon
-            this.innerHTML = type === "password"
-                ? '<i class="bi bi-eye-slash"></i>'
-                : '<i class="bi bi-eye"></i>';
+        document.getElementById("togglePassword2").addEventListener("click", function() {
+            let passwordInput = document.getElementById("ulangPassword");
+            let icon = this.querySelector("i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
         });
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

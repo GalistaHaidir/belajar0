@@ -126,7 +126,7 @@ if (isset($_POST['submit'])) {
                             </div>
                             <script>
                                 setTimeout(function() {
-                                    window.location.href = "pdf.php";
+                                    window.location.href = "kelola_materi.php";
                                 }, 5000);
                             </script>
                         <?php } ?>
@@ -137,7 +137,7 @@ if (isset($_POST['submit'])) {
                             </div>
                             <script>
                                 setTimeout(function() {
-                                    window.location.href = "pdf.php";
+                                    window.location.href = "kelola_materi.php";
                                 }, 5000);
                             </script>
                         <?php } ?>
@@ -156,9 +156,9 @@ if (isset($_POST['submit'])) {
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="video_file" class="col-sm-2 col-form-label">File Materi</label>
+                                <label for="pdf_file" class="col-sm-2 col-form-label">File Materi</label>
                                 <div class="col-sm-10">
-                                    <input type="file" class="form-control" name="video_file" id="video_file" <?php echo ($op != 'edit') ? 'required' : ''; ?>>
+                                    <input type="file" class="form-control" name="pdf_file" id="pdf_file" <?php echo ($op != 'edit') ? 'required' : ''; ?>>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -207,10 +207,10 @@ if (isset($_POST['submit'])) {
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="pdf.php?op=edit&id=<?php echo $id ?>">
+                                            <a href="kelola_materi.php?op=edit&id=<?php echo $id ?>">
                                                 <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
                                             </a>
-                                            <a href="pdf.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus PDF ini?')">
+                                            <a href="kelola_materi.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus PDF ini?')">
                                                 <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
                                             </a>
                                         </td>

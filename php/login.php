@@ -2,83 +2,72 @@
 session_start();
 include("koneksi.php");
 
-// Variabel
-$error = "";
+$error = ""; // Variabel untuk menyimpan pesan error
 $username = "";
 $password = "";
-$ingat = "";
-
-if (isset($_COOKIE['cookie_username'])) {
-    $cookie_username = $_COOKIE['cookie_username'];
-    $cookie_password = $_COOKIE['cookie_password'];
-    
-    $sql1 = "SELECT * FROM pengguna WHERE username = '$cookie_username'";
-    $q1 = mysqli_query($koneksi, $sql1);
-    $r1 = mysqli_fetch_array($q1);
-    if ($r1['password'] == $cookie_password) {
-        $_SESSION['session_username'] = $cookie_username;
-        $_SESSION['session_password'] = $cookie_password;
-    }
-}
 
 if (isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    // $ingat = $_POST['ingat'];
 
+    // Validasi input
     if ($username == '' || $password == '') {
-        $error .= "<li>Silahkan masukkan username dan juga password.</li>";
+        $error .= "<li>Silahkan masukkan username dan password.</li>";
     } else {
+        // Query untuk memeriksa username
         $sql1 = "SELECT * FROM pengguna WHERE username = '$username'";
         $q1 = mysqli_query($koneksi, $sql1);
+
+        if (!$q1) {
+            die("Query gagal: " . mysqli_error($koneksi));
+        }
+
         $r1 = mysqli_fetch_array($q1);
 
-        if ($r1['username'] == '') {
+        // Validasi username dan password
+        if (!$r1) {
             $error .= "<li>Username <b>$username</b> tidak tersedia.</li>";
         } elseif ($r1['password'] != md5($password)) {
             $error .= "<li>Password yang dimasukkan tidak sesuai.</li>";
         }
 
+        // Jika tidak ada error, lanjutkan proses login
         if (empty($error)) {
+            // Simpan data pengguna ke dalam sesi
             $_SESSION['session_username'] = $username;
             $_SESSION['session_password'] = md5($password);
             $id_pengguna = $r1['id_pengguna'];
 
-            // Memeriksa akses pengguna
+            // Query untuk memeriksa akses pengguna
             $sql2 = "SELECT * FROM akses WHERE id_pengguna = '$id_pengguna'";
             $q2 = mysqli_query($koneksi, $sql2);
+
+            if (!$q2) {
+                die("Query gagal: " . mysqli_error($koneksi));
+            }
+
             $akses = [];
             while ($r2 = mysqli_fetch_array($q2)) {
                 $akses[] = $r2['id_master'];
             }
 
+            // Jika tabel akses kosong, berikan akses default
             if (empty($akses)) {
-                $error .= "<li>Kamu tidak punya akses ke halaman ini</li>";
-            } else {
-                $_SESSION['admin_username'] = $username;
-                $_SESSION['id_pengguna'] = $id_pengguna;
-                $_SESSION['akses'] = $akses;
-
-                // Menyimpan cookie jika diinginkan
-                if ($ingat == 1) {
-                    $cookie_name = "cookie_username";
-                    $cookie_value = $username;
-                    $cookie_time = time() + (60 * 60 * 24 * 7);
-                    setcookie($cookie_name, $cookie_value, $cookie_time, "/");
-
-                    $cookie_name = "cookie_password";
-                    $cookie_value = md5($password);
-                    setcookie($cookie_name, $cookie_value, $cookie_time, "/");
-                }
-
-                header("location:halaman_utama.php");
-                exit();
+                $akses = ['default']; // Akses default
             }
+
+            // Simpan data akses ke dalam sesi
+            $_SESSION['admin_username'] = $username;
+            $_SESSION['id_pengguna'] = $id_pengguna;
+            $_SESSION['akses'] = $akses;
+
+            // Redirect ke halaman utama
+            header("location: halaman_utama.php");
+            exit();
         }
     }
 }
 ?>
-
 <!doctype html>
 <html lang="en">
 
@@ -94,7 +83,7 @@ if (isset($_POST['login'])) {
 </head>
 
 <body>
-<nav class="navbar navbar-expand-md" style="background-color: rgba(0, 0, 0, 0.5);">
+    <nav class="navbar navbar-expand-md" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="container-fluid">
             <div class="navbar-brand" href="#">
                 <a class="navbar-brand" href="#">
@@ -123,11 +112,11 @@ if (isset($_POST['login'])) {
             <hr>
 
             <form class="px-3 py-1" method="POST">
-                <?php if($error){ ?>
+                <?php if ($error) { ?>
                     <div id="login-alert" class="alert alert-danger col-sm-12">
                         <ul><?php echo $error ?></ul>
                     </div>
-                    <?php 
+                    <?php
                     header("refresh:5;url=login.php");
                     ?>
                 <?php } ?>
@@ -147,14 +136,7 @@ if (isset($_POST['login'])) {
                         <i class="bi bi-eye-slash text-white"></i>
                     </button>
                 </div>
-                <div class="input-group mb-3">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" id="login-remember" name="ingat" value="1"
-                            <?php if($ingat == '1') echo "checked"?>> Ingat Aku
-                        </label>
-                    </div>
-                </div>
+
 
                 <div class="d-flex justify-content-end">
                     <button type="submit" name="login" class="btn btn-warning" style="width: 100px;">Masuk</button>
@@ -173,15 +155,15 @@ if (isset($_POST['login'])) {
         const togglePassword = document.querySelector("#togglePassword");
         const passwordInput = document.querySelector("#password");
 
-        togglePassword.addEventListener("click", function () {
+        togglePassword.addEventListener("click", function() {
             // Toggle the type attribute
             const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
             passwordInput.setAttribute("type", type);
 
             // Toggle the icon
-            this.innerHTML = type === "password"
-                ? '<i class="bi bi-eye-slash"></i>'
-                : '<i class="bi bi-eye"></i>';
+            this.innerHTML = type === "password" ?
+                '<i class="bi bi-eye-slash"></i>' :
+                '<i class="bi bi-eye"></i>';
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
