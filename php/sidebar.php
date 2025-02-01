@@ -100,7 +100,7 @@
         </li>
         <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
             <li class="sidebar-item">
-                <a href="guru_akunsiswa.php" class="sidebar-link">
+                <a href="kelola_akunsiswa.php" class="sidebar-link">
                     <i class="bi bi-person-arms-up"></i>
                     <span>Siswa</span>
                 </a>

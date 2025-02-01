@@ -9,6 +9,19 @@ if (!isset($_SESSION['session_username'])) {
 
 $sessionUsername = $_SESSION['admin_username'];
 
+// Ambil data user dari database
+$query = "SELECT fotoProfil FROM pengguna WHERE username = '$sessionUsername'";
+$result = mysqli_query($koneksi, $query);
+
+// Periksa apakah ada hasil
+if ($result && mysqli_num_rows($result) > 0) {
+    $data = mysqli_fetch_assoc($result);
+    $fotoProfil = $data['fotoProfil'];
+} else {
+    // Jika data tidak ditemukan, set nilai default
+    $fotoProfil = "default.jpg"; 
+}
+
 $id_pengguna = "";
 $namaLengkap = "";
 $nomorTlpn = "";
@@ -115,7 +128,7 @@ if (isset($_POST['submit'])) { // create
                             </div>
                             <script>
                                 setTimeout(function() {
-                                    window.location.href = "guru_akunsiswa.php";
+                                    window.location.href = "kelola_akunsiswa.php";
                                 }, 5000); // Mengalihkan setelah 5 detik
                             </script>
                         <?php } ?>
@@ -126,7 +139,7 @@ if (isset($_POST['submit'])) { // create
                             </div>
                             <script>
                                 setTimeout(function() {
-                                    window.location.href = "guru_akunsiswa.php";
+                                    window.location.href = "kelola_akunsiswa.php";
                                 }, 5000); // Mengalihkan setelah 5 detik
                             </script>
                         <?php } ?>
@@ -207,10 +220,10 @@ if (isset($_POST['submit'])) { // create
                                             <td scope="row"><?php echo $username ?></td>
                                             <td scope="row"><?php echo $password ?></td>
                                             <td scope="row">
-                                                <a href="guru_akunsiswa.php?op=edit&id_pengguna=<?php echo $id_pengguna ?>">
+                                                <a href="kelola_akunsiswa.php?op=edit&id_pengguna=<?php echo $id_pengguna ?>">
                                                     <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
                                                 </a>
-                                                <a href="guru_akunsiswa.php?op=delete&id_pengguna=<?php echo $id_pengguna ?>" onclick="return confirm('Yakin ingin hapus data?')">
+                                                <a href="kelola_akunsiswa.php?op=delete&id_pengguna=<?php echo $id_pengguna ?>" onclick="return confirm('Yakin ingin hapus data?')">
                                                     <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
                                                 </a>
                                             </td>

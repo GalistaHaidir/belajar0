@@ -1,10 +1,26 @@
 <?php
 session_start();
+
+include 'koneksi.php'; // Koneksi ke database
+
 if (!isset($_SESSION['session_username'])) {
     header("location:login.php");
 }
 
 $sessionUsername = $_SESSION['admin_username'];
+
+// Ambil data user dari database
+$query = "SELECT fotoProfil FROM pengguna WHERE username = '$sessionUsername'";
+$result = mysqli_query($koneksi, $query);
+
+// Periksa apakah ada hasil
+if ($result && mysqli_num_rows($result) > 0) {
+    $data = mysqli_fetch_assoc($result);
+    $fotoProfil = $data['fotoProfil'];
+} else {
+    // Jika data tidak ditemukan, set nilai default
+    $fotoProfil = "default.jpg"; 
+}
 
 ?>
 

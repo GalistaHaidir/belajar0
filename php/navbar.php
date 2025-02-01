@@ -4,9 +4,9 @@
         <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">
                 <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                    <img src="profile/<?php echo htmlspecialchars($fotoProfil); ?>" class="avatar omg-fluid" alt="">
+                    <img src="profile/<?php echo htmlspecialchars($fotoProfil); ?>" class="avatar omg-fluid">
                 </a>
-                <div class="dropdown-menu dropdown-menu-end rounded-0 border-0 shadow mt-3">
+                <div class="dropdown-menu dropdown-menu-end rounded-4 border-0 shadow mt-3">
                     <a href="profil.php" class="dropdown-item">
                         <i class="bi bi-person-fill"></i>
                         <span>Akun</span>
