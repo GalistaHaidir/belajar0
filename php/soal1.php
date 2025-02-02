@@ -10,9 +10,10 @@
 <body>
     <h1>Selamat Datang di Sistem Ujian Online</h1>
     <ul>
-        <li><a href="pengaturan.php">Pengaturan Ujian</a></li>
+        <li><a href="peraturan.php">Pengaturan Ujian</a></li>
         <li><a href="soal.php">Daftar Soal</a></li>
         <li><a href="nilai.php">Nilai Peserta</a></li>
+        <li><a href="kerjakan_soal.php">Kerjakan Soal</a></li>
     </ul>
 </body>
 
