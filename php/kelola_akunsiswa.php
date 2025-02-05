@@ -24,7 +24,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     $fotoProfil = $data['fotoProfil'];
 } else {
     // Jika data tidak ditemukan, set nilai default
-    $fotoProfil = "default.jpg"; 
+    $fotoProfil = "default.jpg";
 }
 
 $id_pengguna = "";
@@ -122,9 +122,12 @@ if (isset($_POST['submit'])) { // create
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <div class="card">
-                    <div class="card-header text-light" style="background-color: #0b1915;">
-                        Kelola Akun
+                <button class="btn-backspace" onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i> <span>Kembali</span>
+                </button>
+                <div class="card" style="border-radius: 20px;">
+                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                        Kelola Akun Siswa
                     </div>
                     <div class="card-body">
                         <?php if (!empty($error)) { ?>
@@ -186,12 +189,13 @@ if (isset($_POST['submit'])) { // create
                             </div>
                         </form>
                     </div>
-
-                    <div class="card">
-                        <div class="card-header text-white" style="background-color: #0b1915;">
-                            Data Akun
-                        </div>
-                        <div class="card-body">
+                </div>
+                <div class="card mt-4" style="border-radius: 20px;">
+                <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                        Data Akun Siswa
+                    </div>
+                    <div class="card-body">
+                        <div style="max-height: 350px; overflow-y: auto;">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -248,6 +252,11 @@ if (isset($_POST['submit'])) { // create
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script>
+        function navigateToPage() {
+            window.history.back();
+        }
+    </script>
 </body>
 
 </html>

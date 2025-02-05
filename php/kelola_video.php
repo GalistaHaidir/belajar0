@@ -24,7 +24,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     $fotoProfil = $data['fotoProfil'];
 } else {
     // Jika data tidak ditemukan, set nilai default
-    $fotoProfil = "default.jpg"; 
+    $fotoProfil = "default.jpg";
 }
 
 
@@ -125,7 +125,9 @@ if (isset($_POST['submit'])) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-
+                <button class="btn-backspace" onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i> <span>Kembali</span>
+                </button>
                 <!-- Card: Kelola Video -->
                 <div class="card" style="border-radius: 20px;">
                     <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
@@ -241,6 +243,11 @@ if (isset($_POST['submit'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script>
+        function navigateToPage() {
+            window.history.back();
+        }
+    </script>
 </body>
 
 </html>

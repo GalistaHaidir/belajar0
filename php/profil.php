@@ -69,7 +69,10 @@ if (isset($_GET['op'])) {
         <?php include 'sidebar.php'; ?>
         <div class="main">
             <?php include 'navbar.php'; ?>
-            <main class="content px-3 py-4 mt-4">
+            <main class="content px-3 py-4 mt-1">
+                <button class="btn-backspace" onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i> <span>Kembali</span>
+                </button>
                 <div class="container-fluid">
                     <div class="row justify-content-center">
                         <!-- Card Foto Profil -->
@@ -128,6 +131,11 @@ if (isset($_GET['op'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script>
+        function navigateToPage() {
+            window.history.back();
+        }
+    </script>
 </body>
 
 </html>

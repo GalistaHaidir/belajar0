@@ -48,9 +48,11 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <div class="mb-3">
+                <button class="btn-backspace" onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i> <span>Kembali</span>
+                </button>
+                <div class="mb-3 mt-2">
                     <div class="row">
-
                         <div class="col-12 col-md-4">
                             <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='peraturan.php';">
                                 <div class="card-body py-4 text-center">
@@ -98,6 +100,11 @@ if ($result && mysqli_num_rows($result) > 0) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script>
+        function navigateToPage() {
+            window.history.back();
+        }
+    </script>
 </body>
 
 </html>
