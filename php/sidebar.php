@@ -65,7 +65,7 @@
             <ul id="auth2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
                     <li class="sidebar-item">
-                        <a href="kerjakan_soal.php" class="sidebar-link">
+                        <a href="kelola_soal.php" class="sidebar-link">
                             Kelola Soal
                         </a>
                     </li>
@@ -86,7 +86,7 @@
             <ul id="auth4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
+                        <a href="kelola_tugas.php" class="sidebar-link">
                             Kelola Tugas
                         </a>
                     </li>

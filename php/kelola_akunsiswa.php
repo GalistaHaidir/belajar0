@@ -7,6 +7,11 @@ if (!isset($_SESSION['session_username'])) {
     exit();
 }
 
+if (!in_array("Guru", $_SESSION['akses'])) {
+    echo "Kamu tidak punya akses";
+    exit();
+}
+
 $sessionUsername = $_SESSION['admin_username'];
 
 // Ambil data user dari database
@@ -235,30 +240,7 @@ if (isset($_POST['submit'])) { // create
                     </div>
                 </div>
             </main>
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row text-body-secondary">
-                        <div class="col-6 text-start">
-                            <a href="#" class="text-body-secondary">
-                                <strong>Belajar.0</strong>
-                            </a>
-                        </div>
-                        <div class="col-6 text-end text-body-secondary d-none d-md-block">
-                            <ul class="list-inline mb-0">
-                                <li class="list-inline-item">
-                                    <a href="#" class="text-body-secondary">Contact</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="#" class="text-body-secondary">About</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="#" class="text-body-secondary">Terms & Conditions</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <?php include 'footer.php'; ?>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

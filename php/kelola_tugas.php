@@ -29,7 +29,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 $id_tugas = "";
 $tanggal = "";
-$deskripsi_tugas = "";
+$tugas = "";
 
 $sukses = "";
 $error = "";
@@ -53,7 +53,7 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
     $q1 = mysqli_query($koneksi, $sql1);
     $r1 = mysqli_fetch_array($q1);
     $tanggal = $r1['tanggal'];
-    $deskripsi_tugas = $r1['deskripsi_tugas'];
+    $tugas = $r1['tugas'];
 
     if ($tanggal == '') {
         $error = "Data tidak ditemukan";
@@ -63,11 +63,11 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
 // Operasi Create/Update
 if (isset($_POST['submit'])) {
     $tanggal = $_POST['tanggal'];
-    $deskripsi_tugas = $_POST['deskripsi_tugas'];
+    $tugas = $_POST['tugas'];
 
-    if ($tanggal && $deskripsi_tugas) {
+    if ($tanggal && $tugas) {
         if (isset($_GET['op']) && $_GET['op'] == 'edit') {
-            $sql1 = "UPDATE tugas SET tanggal = '$tanggal', deskripsi_tugas = '$deskripsi_tugas' WHERE id_tugas = '$id_tugas'";
+            $sql1 = "UPDATE tugas SET tanggal = '$tanggal', tugas = '$tugas' WHERE id_tugas = '$id_tugas'";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
                 $sukses = "Data berhasil diperbarui";
@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
                 $error = "Data gagal diperbarui";
             }
         } else {
-            $sql1 = "INSERT INTO tugas (tanggal, deskripsi_tugas) VALUES ('$tanggal', '$deskripsi_tugas')";
+            $sql1 = "INSERT INTO tugas (tanggal, tugas) VALUES ('$tanggal', '$tugas')";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
                 $sukses = "Berhasil menambahkan data baru";
@@ -148,7 +148,7 @@ if (isset($_POST['submit'])) {
                             <div class="mb-3 row">
                                 <label for="description" class="col-sm-2 col-form-label">Deskripsi Tugas</label>
                                 <div class="col-sm-10">
-                                    <textarea class="form-control" placeholder="Deskripsi Tugas" name="deskripsi_tugas" id="deskripsi_tugas" required><?php echo $deskripsi_tugas ?></textarea>
+                                    <textarea class="form-control" placeholder="Deskripsi Tugas" name="tugas" id="tugas" required><?php echo $tugas ?></textarea>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -185,12 +185,12 @@ if (isset($_POST['submit'])) {
                                     while ($r2 = mysqli_fetch_array($q2)) {
                                         $id_tugas                 = $r2['id_tugas'];
                                         $tanggal            = $r2['tanggal'];
-                                        $deskripsi_tugas    = $r2['deskripsi_tugas'];
+                                        $tugas    = $r2['tugas'];
                                     ?>
                                         <tr>
                                             <th scope="row"><?php echo $urut++ ?></th>
                                             <td><?php echo $tanggal ?></td>
-                                            <td><?php echo $deskripsi_tugas ?></td>
+                                            <td><?php echo $tugas ?></td>
                                             <td>
                                                 <a href="kelola_tugas.php?op=edit&id_tugas=<?php echo $id_tugas ?>">
                                                     <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>

@@ -77,7 +77,7 @@ if (isset($_GET['op'])) {
                             <div class="card shadow-sm">
                                 <div class="card-body text-center">
                                     <img src="profile/<?php echo htmlspecialchars($fotoProfil); ?>" class="img-fluid mb-3" alt="Profile Picture"
-                                        style="max-width: 500px; max-height: 300px;">
+                                        style="max-width: 400px; max-height: 300px;">
                                     <h5 class="card-title text-capitalize" style="font-weight:700;"><?php echo htmlspecialchars($sessionUsername); ?></h5>
                                 </div>
                             </div>
