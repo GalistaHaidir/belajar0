@@ -23,18 +23,16 @@ if ($result && mysqli_num_rows($result) > 0) {
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kelola Video</title>
+    <title>Materi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
     <link rel="stylesheet" href="guru_home.css">
 </head>
 
@@ -43,37 +41,43 @@ if ($result && mysqli_num_rows($result) > 0) {
         <?php include 'sidebar.php'; ?>
         <div class="main">
             <?php include 'navbar.php'; ?>
+
             <main class="content px-3 py-4">
-                <div class="container">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 id="materiTitle">😎 Judul Materi</h2>
-                        <a href="index.html" class="btn btn-outline-secondary">⬅ Kembali ke Daftar Materi</a>
-                    </div>
+                <a class="btn btn-outline-danger"
+                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i>
+                    <span>Kembali</span>
+                </a>
+                <div class="container mt-4">
+                    <h2 id="judulMateri">Judul Materi</h2>
+                    <hr>
 
-                    <!-- Deskripsi Materi -->
-                    <div class="card shadow-sm p-4">
-                        <p id="materiContent">Ini adalah isi materi yang bisa berisi teks, gambar, atau kode.</p>
+                    <h4>Capaian Pembelajaran</h4>
+                    <p id="capaianPembelajaran">...</p>
 
-                        <div class="mt-4">
-                            <a href="#" id="prevMateri" class="btn btn-outline-primary">⬅ Materi Sebelumnya</a>
-                            <a href="#" id="nextMateri" class="btn btn-outline-primary float-end">Materi Selanjutnya ➡</a>
-                        </div>
-                    </div>
-                    
+                    <h4>Materi</h4>
+                    <p id="isiMateri">...</p>
+
+                    <div id="pdfContainer" class="mt-3"></div>
+
+
                 </div>
             </main>
 
             <?php include 'footer.php'; ?>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="guru_home.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="guru_home.js"></script>
+    <script>
+         function navigateToPage() {
+            window.history.back();
+        }
     </script>
+
 </body>
 
 </html>

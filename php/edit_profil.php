@@ -168,9 +168,12 @@ if (isset($_POST['submit'])) { // create or update
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4 mt-1">
-                <button class="btn-backspace" onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i> <span>Kembali</span>
-                </button>
+                <a class="btn btn-outline-danger"
+                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i>
+                    <span>Kembali</span>
+                </a>
                 <div class="container-fluid">
                     <div class="row justify-content-center">
                         <!-- Card Foto Profil -->

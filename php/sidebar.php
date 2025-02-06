@@ -10,14 +10,14 @@
     <ul class="sidebar-nav">
         <li class="sidebar-item">
             <a href="halaman_utama.php" class="sidebar-link">
-                <i class="bi bi-house-door-fill"></i>
+                <i class="bi bi-house-door-fill" style="color: #007bff;"></i>
                 <span>Halaman Utama</span>
             </a>
         </li>
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth1" aria-expanded="false" aria-controls="auth1">
-                <i class="bi bi-file-earmark-code-fill"></i>
+                <i class="bi bi-file-earmark-code-fill" style="color:rgb(182, 219, 255);"></i>
                 <span>Materi</span>
             </a>
             <ul id="auth1" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -29,7 +29,7 @@
                     </li>
                 <?php } ?>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a href="materi.php" class="sidebar-link">
                         Materi
                     </a>
                 </li>
@@ -38,7 +38,7 @@
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth3" aria-expanded="false" aria-controls="auth3">
-                <i class="bi bi-play-btn-fill"></i>
+                <i class="bi bi-play-btn-fill" style="color: #28a745;"></i>
                 <span>Vidio Tutorial</span>
             </a>
             <ul id="auth3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -59,7 +59,7 @@
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth2" aria-expanded="false" aria-controls="auth2">
-                <i class="bi bi-pencil-fill"></i>
+                <i class="bi bi-pencil-fill" style="color: #ff8c00;"></i>
                 <span>Soal</span>
             </a>
             <ul id="auth2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -80,7 +80,7 @@
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth4" aria-expanded="false" aria-controls="auth4">
-                <i class="bi bi-list-check"></i>
+                <i class="bi bi-list-check" style="color: #20c997;"></i>
                 <span>Tugas</span>
             </a>
             <ul id="auth4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -101,7 +101,7 @@
         <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
             <li class="sidebar-item">
                 <a href="kelola_akunsiswa.php" class="sidebar-link">
-                    <i class="bi bi-person-arms-up"></i>
+                    <i class="bi bi-person-arms-up" style="color:rgb(164, 114, 255);"></i>
                     <span>Siswa</span>
                 </a>
             <?php } ?>
@@ -109,7 +109,7 @@
     </ul>
     <div class="sidebar-footer mb-1">
         <a href="logout.php" class="sidebar-link">
-            <i class="bi bi-door-open-fill"></i>
+            <i class="bi bi-door-open-fill"style="color:rgb(255, 0, 0);"></i>
             <span>Keluar</span>
         </a>
     </div>

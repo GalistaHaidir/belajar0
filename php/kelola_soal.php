@@ -48,9 +48,12 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <button class="btn-backspace" onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i> <span>Kembali</span>
-                </button>
+                <a class="btn btn-outline-danger"
+                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i>
+                    <span>Kembali</span>
+                </a>
                 <div class="mb-3 mt-2">
                     <div class="row">
                         <div class="col-12 col-md-4">

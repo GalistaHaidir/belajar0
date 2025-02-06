@@ -122,9 +122,12 @@ if (isset($_POST['submit'])) { // create
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <button class="btn-backspace" onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i> <span>Kembali</span>
-                </button>
+                <a class="btn btn-outline-danger"
+                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i>
+                    <span>Kembali</span>
+                </a>
                 <div class="card" style="border-radius: 20px;">
                     <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
                         Kelola Akun Siswa
@@ -191,7 +194,7 @@ if (isset($_POST['submit'])) { // create
                     </div>
                 </div>
                 <div class="card mt-4" style="border-radius: 20px;">
-                <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
                         Data Akun Siswa
                     </div>
                     <div class="card-body">
