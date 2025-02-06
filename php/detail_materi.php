@@ -22,6 +22,25 @@ if ($result && mysqli_num_rows($result) > 0) {
     $fotoProfil = "default.jpg";
 }
 
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Fetch the data for the specific ID
+$sql = "SELECT * FROM materi WHERE id = $id";
+$result = mysqli_query($koneksi, $sql);
+
+// Check if data exists
+if ($result && mysqli_num_rows($result) > 0) {
+    $row = mysqli_fetch_assoc($result);
+    $title = htmlspecialchars($row['title']); // Escape special characters
+    $description = htmlspecialchars($row['description']); // Escape special characters
+    $file_path = htmlspecialchars($row['file_path']); // Assuming you have a 'file_path' column for the PDF
+} else {
+    // If no data is found, set default values
+    $title = "Materi Tidak Ditemukan";
+    $description = "Deskripsi tidak tersedia.";
+    $file_path = ""; // Default to empty if no file found
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,18 +69,19 @@ if ($result && mysqli_num_rows($result) > 0) {
                     <span>Kembali</span>
                 </a>
                 <div class="container mt-4">
-                    <h2 id="judulMateri">Judul Materi</h2>
+                    <h2 id="judulMateri" style="text-transform: capitalize;"><?php echo $title; ?></h2>
                     <hr>
 
-                    <h4>Capaian Pembelajaran</h4>
-                    <p id="capaianPembelajaran">...</p>
+                    <h4>Description</h4>
+                    <p id="capaianPembelajaran"><?php echo $description; ?></p>
 
-                    <h4>Materi</h4>
-                    <p id="isiMateri">...</p>
-
-                    <div id="pdfContainer" class="mt-3"></div>
-
-
+                    <h6>Materi PDF</h6>
+                    <?php if (!empty($file_path)) { ?>
+                        <a href="<?php echo $file_path; ?>" class="btn btn-outline-primary mb-4" target="_blank">Download PDF</a>
+                        <iframe src="<?php echo $file_path; ?>" width="100%" height="600px"></iframe>
+                    <?php } else { ?>
+                        <p>Tidak ada PDF yang tersedia.</p>
+                    <?php } ?>
                 </div>
             </main>
 
@@ -73,7 +93,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="guru_home.js"></script>
     <script>
-         function navigateToPage() {
+        function navigateToPage() {
             window.history.back();
         }
     </script>

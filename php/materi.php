@@ -22,6 +22,9 @@ if ($result && mysqli_num_rows($result) > 0) {
     $fotoProfil = "default.jpg";
 }
 
+$sql1 = "SELECT * FROM materi";
+$q1 = mysqli_query($koneksi, $sql1);
+
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +47,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <a class="btn btn-outline-danger" 
+                <a class="btn btn-outline-danger"
                     style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
                     onclick="navigateToPage()">
                     <i class="bi bi-backspace-fill"></i>
@@ -52,7 +55,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                 </a>
                 <div class="container">
                     <h2 class="mb-4"><i class="bi bi-book-half text-primary"></i></i>
-                        Pilih Materi</h2>
+                        Pilih Kategori Materi</h2>
 
                     <!-- Search Bar -->
                     <div class="row mb-3">
@@ -81,7 +84,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                                 <div class="card-body">
                                     <h5 class="card-title">Dasar-dasar HTML</h5>
                                     <p class="card-text">Memahami struktur dasar HTML.</p>
-                                    <a href="html.php" class="btn btn-outline-primary">Lihat Materi</a>
+                                    <a href="sub_materi.php?category=html" class="btn btn-outline-primary">Lihat Materi</a>
                                 </div>
                             </div>
                         </div>
@@ -89,19 +92,18 @@ if ($result && mysqli_num_rows($result) > 0) {
                         <div class="col-md-4 mb-4 materi-item" data-category="css">
                             <div class="card shadow-sm">
                                 <div class="card-body">
-                                    <h5 class="card-title">Flexbox CSS</h5>
+                                    <h5 class="card-title">CSS</h5>
                                     <p class="card-text">Belajar mengatur layout dengan Flexbox.</p>
-                                    <a href="materi-css.html" class="btn btn-outline-primary">Lihat Materi</a>
+                                    <a href="sub_materi.php?category=css" class="btn btn-outline-primary">Lihat Materi</a>
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-md-4 mb-4 materi-item" data-category="js">
                             <div class="card shadow-sm">
                                 <div class="card-body">
-                                    <h5 class="card-title">Dasar JavaScript</h5>
+                                    <h5 class="card-title">JavaScript</h5>
                                     <p class="card-text">Pengenalan dasar-dasar JavaScript.</p>
-                                    <a href="materi-js.html" class="btn btn-outline-primary">Lihat Materi</a>
+                                    <a href="sub_materi.php?category=javascript" class="btn btn-outline-primary">Lihat Materi</a>
                                 </div>
                             </div>
                         </div>

@@ -38,7 +38,7 @@
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth3" aria-expanded="false" aria-controls="auth3">
-                <i class="bi bi-play-btn-fill" style="color: #28a745;"></i>
+                <i class="bi bi-play-btn-fill" style="color:rgb(255, 0, 0);"></i>
                 <span>Vidio Tutorial</span>
             </a>
             <ul id="auth3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
@@ -50,7 +50,7 @@
                     </li>
                 <?php } ?>
                 <li class="sidebar-item">
-                    <a href="video_tutorial.php" class="sidebar-link">
+                    <a href="video.php" class="sidebar-link">
                         Video Tutorial
                     </a>
                 </li>
