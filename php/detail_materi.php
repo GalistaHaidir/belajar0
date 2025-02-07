@@ -68,7 +68,7 @@ if ($result && mysqli_num_rows($result) > 0) {
                     <i class="bi bi-backspace-fill"></i>
                     <span>Kembali</span>
                 </a>
-                <div class="container mt-4">
+                <div class="container">
                     <h2 id="judulMateri" style="text-transform: capitalize;"><?php echo $title; ?></h2>
                     <hr>
 

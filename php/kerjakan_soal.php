@@ -25,56 +25,8 @@ if ($result && mysqli_num_rows($result) > 0) {
 
 $id_pengguna = $_SESSION['id_pengguna']; // Ambil id_pengguna dari session
 
-// Fetch waktu minimal dari tabel peraturan
-$peraturan = $koneksi->query("SELECT waktu FROM tbl_pengaturan LIMIT 1")->fetch_assoc();
-$waktu_minimal = $peraturan['waktu']; // Waktu dalam menit
 
-// Fetch all questions from the database
-$result = $koneksi->query("SELECT * FROM tbl_soal");
-
-// Handle form submission
-if (isset($_POST['submit'])) {
-    $jawaban_benar = 0;
-    $jawaban_salah = 0;
-    $jawaban_kosong = 0;
-
-    while ($row = $result->fetch_assoc()) {
-        $id_soal = $row['id'];
-        $kunci_jawaban = $row['kunci_jawaban'];
-
-        // Cek jawaban pengguna
-        if (isset($_POST["jawaban_$id_soal"])) {
-            $jawaban = $_POST["jawaban_$id_soal"];
-            if ($jawaban == $kunci_jawaban) {
-                $jawaban_benar++;
-            } else {
-                $jawaban_salah++;
-            }
-        } else {
-            $jawaban_kosong++;
-        }
-    }
-
-    // Hitung nilai
-    $total_soal = $jawaban_benar + $jawaban_salah + $jawaban_kosong;
-    $nilai = ($jawaban_benar / $total_soal) * 100;
-
-    // Simpan hasil ke database
-    $tanggal = date('Y-m-d');
-    $status = $nilai >= 60 ? 'Lulus' : 'Tidak Lulus'; // Contoh kriteria kelulusan
-
-    $sql = "INSERT INTO tbl_nilai (id_pengguna, benar, salah, kosong, nilai, tanggal, status) VALUES ('$id_pengguna', '$jawaban_benar', '$jawaban_salah', '$jawaban_kosong', '$nilai', '$tanggal', '$status')";
-    $koneksi->query($sql);
-
-    // Tampilkan hasil
-    echo "<h2>Hasil Ujian</h2>";
-    echo "Jawaban Benar: $jawaban_benar<br>";
-    echo "Jawaban Salah: $jawaban_salah<br>";
-    echo "Jawaban Kosong: $jawaban_kosong<br>";
-    echo "Nilai: $nilai<br>";
-    echo "Status: $status<br>";
-    exit;
-}
+$result = $koneksi->query("SELECT * FROM tbl_pengaturan");
 ?>
 
 <!DOCTYPE html>
@@ -89,33 +41,6 @@ if (isset($_POST['submit'])) {
 
     <link rel="stylesheet" href="guru_home.css">
     <title>Mengerjakan Soal</title>
-    <style></style>
-    <script>
-        // Timer untuk waktu minimal
-        let waktu = <?= $waktu_minimal ?> * 60; // Konversi menit ke detik
-
-        function startTimer() {
-            const timerElement = document.getElementById('timer');
-            const interval = setInterval(() => {
-                const minutes = Math.floor(waktu / 60);
-                const seconds = waktu % 60;
-
-                // Tampilkan waktu yang tersisa
-                timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
-                // Jika waktu habis, kirim form secara otomatis
-                if (waktu <= 0) {
-                    clearInterval(interval);
-                    alert('Waktu habis! Jawaban Anda akan dikirim.');
-                    document.getElementById('soalForm').submit();
-                }
-
-                waktu--;
-            }, 1000);
-        }
-
-        window.onload = startTimer;
-    </script>
 </head>
 
 <body>
@@ -124,73 +49,20 @@ if (isset($_POST['submit'])) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <div class="container">
-                    <!-- Header -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h1 class="text-center">Mengerjakan Soal</h1>
-                        </div>
-                    </div>
-
-                    <!-- Timer dan Soal -->
-                    <div class="row mb-4">
-                        <div class="col-md-8">
-                            <form method="POST" action="" id="soalForm">
-                                <?php
-                                // Reset result pointer to fetch questions again
-                                $result = $koneksi->query("SELECT * FROM tbl_soal");
-                                while ($row = $result->fetch_assoc()) { ?>
-                                    <div class="card shadow-sm border-0 mb-4">
-                                        <div class="card-body">
-                                            <!-- Pertanyaan -->
-                                            <p class="fw-bold"><?= $row['pertanyaan'] ?></p>
-
-                                            <!-- Gambar (jika ada) -->
-                                            <?php if ($row['gambar']) { ?>
-                                                <div class="text-center mb-3">
-                                                    <img src="gambar_soal/<?= $row['gambar'] ?>" class="img-fluid rounded" style="max-width: 300px;">
-                                                </div>
-                                            <?php } ?>
-
-                                            <!-- Pilihan Jawaban -->
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="jawaban_<?= $row['id'] ?>" value="A" id="jawaban_<?= $row['id'] ?>_A">
-                                                <label class="form-check-label" for="jawaban_<?= $row['id'] ?>_A"><?= $row['a'] ?></label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="jawaban_<?= $row['id'] ?>" value="B" id="jawaban_<?= $row['id'] ?>_B">
-                                                <label class="form-check-label" for="jawaban_<?= $row['id'] ?>_B"><?= $row['b'] ?></label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="jawaban_<?= $row['id'] ?>" value="C" id="jawaban_<?= $row['id'] ?>_C">
-                                                <label class="form-check-label" for="jawaban_<?= $row['id'] ?>_C"><?= $row['c'] ?></label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="radio" class="form-check-input" name="jawaban_<?= $row['id'] ?>" value="D" id="jawaban_<?= $row['id'] ?>_D">
-                                                <label class="form-check-label" for="jawaban_<?= $row['id'] ?>_D"><?= $row['d'] ?></label>
-                                            </div>
-                                        </div>
+                <div class="container mt-5">
+                    <h1>Pilih Ujian</h1>
+                    <div class="row">
+                        <?php while ($row = $result->fetch_assoc()) { ?>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Ujian ID: <?= $row['id_peraturan']; ?></h5>
+                                        <p class="card-text">Waktu Ujian: <?= $row['waktu']; ?> menit</p>
+                                        <a href="ujian.php?id_peraturan=<?= $row['id_peraturan']; ?>" class="btn btn-primary">Mulai Ujian</a>
                                     </div>
-                                <?php } ?>
-
-                                <!-- Tombol Kirim -->
-                                <div class="row">
-                                    <div class="col-12 text-center">
-                                        <button type="submit" name="submit" class="btn btn-success btn-lg">Kirim Jawaban</button>
-                                    </div>
-                                </div>
-                                
-                            </form>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="card shadow-sm border-0">
-                                <div class="card-body text-center">
-                                    <h5>Waktu Tersisa</h5>
-                                    <p class="display-6 text-danger" id="timer">00:00</p>
                                 </div>
                             </div>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
             </main>

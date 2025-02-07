@@ -56,21 +56,21 @@ $result = mysqli_query($koneksi, $sql);
                     <span>Kembali</span>
                 </a>
                 <!-- Search Form -->
-               
+
 
                 <!-- Video Gallery -->
                 <div class="container mt-4">
-                <h2 class="mb-4"><i class="bi bi-play-btn-fill text-danger"></i>
+                    <h2 class="mb-4"><i class="bi bi-play-btn-fill text-danger"></i>
                         Pilih Video</h2>
 
                     <!-- Search Input -->
                     <div class="row mb-3">
-                    <div class="col-md-6">
-                        <input type="text" id="searchVideo" class="form-control" placeholder="Cari video..." onkeyup="filterVideos()">
+                        <div class="col-md-6">
+                            <input type="text" id="searchVideo" class="form-control" placeholder="Cari video..." onkeyup="filterVideos()">
+                        </div>
                     </div>
-                </div>
                     <h1 class="mb-4">Video Gallery</h1>
-                    <div class="row row-cols-1 row-cols-md-3 g-4" id="videoGallery"> <!-- Tambahkan id videoGallery -->
+                    <div class="row row-cols-1 row-cols-md-5 g-4" id="videoGallery"> <!-- Tambahkan id videoGallery -->
                         <?php
                         if (mysqli_num_rows($result) > 0) {
                             $modalIndex = 1;
@@ -82,35 +82,35 @@ $result = mysqli_query($koneksi, $sql);
                                 $thumbnail_path = htmlspecialchars($row['thumbnail_path']);
 
                                 echo '
-                <div class="col video-card"> <!-- Tambahkan class "video-card" -->
-                    <div class="card">
-                        <img src="' . $thumbnail_path . '" class="card-img-top" alt="Thumbnail for ' . $title . '">
-                        <div class="card-body">
-                            <h5 class="card-title">' . $title . '</h5>
-                            <p class="card-text">' . $description . '</p>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#videoModal' . $modalIndex . '">
-                                Tonton Video
-                            </button>
+            <div class="col video-card"> <!-- Tambahkan class "video-card" -->
+                <div class="card">
+                    <img src="' . $thumbnail_path . '" class="card-img-top" alt="Thumbnail for ' . $title . '">
+                    <div class="card-body">
+                        <h5 class="card-title">' . $title . '</h5>
+                        <p class="card-text">' . $description . '</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#videoModal' . $modalIndex . '">
+                            Tonton Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="videoModal' . $modalIndex . '" tabindex="-1" aria-labelledby="videoModal' . $modalIndex . 'Label" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="videoModal' . $modalIndex . 'Label">' . $title . '</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <video width="100%" height="300" controls>
+                                <source src="' . $file_path . '" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                     </div>
                 </div>
-
-                <div class="modal fade" id="videoModal' . $modalIndex . '" tabindex="-1" aria-labelledby="videoModal' . $modalIndex . 'Label" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="videoModal' . $modalIndex . 'Label">' . $title . '</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <video width="100%" height="400" controls>
-                                    <source src="' . $file_path . '" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                    </div>
-                </div>';
+            </div>';
 
                                 $modalIndex++;
                             }
@@ -119,9 +119,6 @@ $result = mysqli_query($koneksi, $sql);
                         }
                         ?>
                     </div>
-                </div>
-
-
 
             </main>
             <?php include 'footer.php'; ?>

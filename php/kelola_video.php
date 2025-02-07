@@ -34,6 +34,7 @@ $error = "";
 $id = "";
 $title = "";
 $description = "";
+$thumbnail_path = "";
 $file_path = "";
 
 if (isset($_GET['op'])) {
@@ -62,6 +63,7 @@ if ($op == 'edit') {
     $r1 = mysqli_fetch_array($q1);
     $title = $r1['title'];
     $description = $r1['description'];
+    $thumbnail_path = $r1['thumbnail_path'];
     $file_path = $r1['file_path'];
     if ($title == '') {
         $error = "Data tidak ditemukan";
@@ -73,16 +75,23 @@ if (isset($_POST['submit'])) {
     $title = $_POST['title'];
     $description = $_POST['description'];
     $file_path = '';
+    $thumbnail_path = '';
 
-    // Cek apakah ada file yang diupload
+    // Check if a video file is uploaded
     if (isset($_FILES['video_file']) && $_FILES['video_file']['error'] == 0) {
         $file_path = 'uploads/' . basename($_FILES['video_file']['name']);
         move_uploaded_file($_FILES['video_file']['tmp_name'], $file_path);
     }
 
+    // Check if a thumbnail file is uploaded
+    if (isset($_FILES['thumbnail_file']) && $_FILES['thumbnail_file']['error'] == 0) {
+        $thumbnail_path = 'uploads/thumbnails/' . basename($_FILES['thumbnail_file']['name']);
+        move_uploaded_file($_FILES['thumbnail_file']['tmp_name'], $thumbnail_path);
+    }
+
     if ($title && $description) {
         if ($op == 'edit') { // Update
-            $sql1 = "UPDATE tbl_video SET title = '$title', description = '$description', file_path = '$file_path' WHERE id = '$id'";
+            $sql1 = "UPDATE tbl_video SET title = '$title', description = '$description', file_path = '$file_path', thumbnail_path = '$thumbnail_path' WHERE id = '$id'";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
                 $sukses = "Video berhasil diperbarui";
@@ -90,7 +99,7 @@ if (isset($_POST['submit'])) {
                 $error = "Video gagal diperbarui";
             }
         } else { // Insert
-            $sql1 = "INSERT INTO tbl_video (title, description, file_path) VALUES ('$title', '$description', '$file_path')";
+            $sql1 = "INSERT INTO tbl_video (title, description, file_path, thumbnail_path) VALUES ('$title', '$description', '$file_path', '$thumbnail_path')";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
                 $sukses = "Video berhasil diupload";
@@ -173,6 +182,12 @@ if (isset($_POST['submit'])) {
                                 </div>
                             </div>
                             <div class="mb-3 row">
+                                <label for="thumbnail_file" class="col-sm-2 col-form-label">Thumbnail Video</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" name="thumbnail_file" id="thumbnail_file" <?php echo ($op != 'edit') ? 'required' : ''; ?>>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
                                 <label for="video_file" class="col-sm-2 col-form-label">File Video</label>
                                 <div class="col-sm-10">
                                     <input type="file" class="form-control" name="video_file" id="video_file" <?php echo ($op != 'edit') ? 'required' : ''; ?>>
@@ -197,6 +212,7 @@ if (isset($_POST['submit'])) {
                                     <th scope="col">#</th>
                                     <th scope="col">Judul</th>
                                     <th scope="col">Deskripsi</th>
+                                    <th scope="col">Thumbnail</th>
                                     <th scope="col">Video</th>
                                     <th scope="col">Aksi</th>
                                 </tr>
@@ -210,6 +226,7 @@ if (isset($_POST['submit'])) {
                                     $id          = $r2['id'];
                                     $title       = $r2['title'];
                                     $description = $r2['description'];
+                                    $thumbnail_path = $r2['thumbnail_path'];
                                     $file_path   = $r2['file_path'];
                                 ?>
                                     <tr>
@@ -217,7 +234,10 @@ if (isset($_POST['submit'])) {
                                         <td><?php echo $title ?></td>
                                         <td><?php echo $description ?></td>
                                         <td>
-                                            <video width="150" controls>
+                                            <img src="<?php echo $thumbnail_path ?>" width="150" alt="Thumbnail">
+                                        </td>
+                                        <td>
+                                            <video width="150" height="100" controls>
                                                 <source src="<?php echo $file_path ?>" type="video/mp4">
                                                 Your browser does not support the video tag.
                                             </video>

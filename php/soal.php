@@ -22,8 +22,11 @@ if ($result && mysqli_num_rows($result) > 0) {
     // Jika data tidak ditemukan, set nilai default
     $fotoProfil = "default.jpg";
 }
-// Inisialisasi variabel
-$id = "";
+
+///////////////////////////////////
+
+$id_soal = "";
+$id_peraturan = "";
 $pertanyaan = "";
 $gambar = "";
 $a = "";
@@ -44,83 +47,92 @@ if (isset($_GET['op'])) {
 
 // Handle Delete
 if ($op == 'delete') {
-    $id = $_GET['id'];
-    $sql = "DELETE FROM tbl_soal WHERE id = '$id'";
+    $id_soal = $_GET['id_soal'];
+    $sql = "DELETE FROM tbl_soal WHERE id_soal = '$id_soal'";
     $q = mysqli_query($koneksi, $sql);
     if ($q) {
-        $sukses = "Berhasil menghapus data.";
+        $sukses = "Berhasil menghapus soal.";
     } else {
-        $error = "Gagal menghapus data.";
+        $error = "Gagal menghapus soal.";
     }
 }
 
 // Handle Edit
+$id_peraturan = $pertanyaan = $a = $b = $c = $d = $kunci_jawaban = $gambar = "";
 if ($op == 'edit') {
-    $id = $_GET['id'];
-    $sql = "SELECT * FROM tbl_soal WHERE id = '$id'";
+    $id_soal = $_GET['id_soal'];
+    $sql = "SELECT * FROM tbl_soal WHERE id_soal = '$id_soal'";
     $q = mysqli_query($koneksi, $sql);
     $r = mysqli_fetch_array($q);
-    $pertanyaan = $r['pertanyaan'];
-    $gambar = $r['gambar'];
-    $a = $r['a'];
-    $b = $r['b'];
-    $c = $r['c'];
-    $d = $r['d'];
-    $kunci_jawaban = $r['kunci_jawaban'];
-
-    if ($pertanyaan == '') {
+    if ($r) {
+        $id_peraturan = $r['id_peraturan'];
+        $pertanyaan = $r['pertanyaan'];
+        $a = $r['a'];
+        $b = $r['b'];
+        $c = $r['c'];
+        $d = $r['d'];
+        $kunci_jawaban = $r['kunci_jawaban'];
+        $gambar = $r['gambar'];
+    } else {
         $error = "Data tidak ditemukan.";
     }
 }
 
 // Handle Create atau Update
 if (isset($_POST['submit'])) {
+    $id_peraturan = $_POST['id_peraturan'];
     $pertanyaan = $_POST['pertanyaan'];
-    $gambar = $_FILES['gambar']['name'];
     $a = $_POST['a'];
     $b = $_POST['b'];
     $c = $_POST['c'];
     $d = $_POST['d'];
     $kunci_jawaban = $_POST['kunci_jawaban'];
 
-    // Validasi input
-    if ($pertanyaan && $a && $b && $c && $d && $kunci_jawaban) {
-        // Upload gambar jika ada
-        if ($gambar) {
-            $target_dir = "gambar_soal/";
-            $target_file = $target_dir . basename($gambar);
-            $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    // Upload Gambar
+    $gambar = null;
+    if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === 0) {
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $file_extension = pathinfo($_FILES['gambar']['name'], PATHINFO_EXTENSION);
 
-            // Validasi file gambar
-            $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
-            if (in_array($file_type, $allowed_types)) {
-                if (!move_uploaded_file($_FILES['gambar']['tmp_name'], $target_file)) {
-                    $error = "Gagal mengupload gambar.";
-                }
+        if (!in_array(strtolower($file_extension), $allowed_extensions)) {
+            $error = "Format file tidak didukung!";
+        } else {
+            $upload_dir = 'gambar_soal/';
+            $file_name = uniqid() . '.' . $file_extension;
+
+            if (move_uploaded_file($_FILES['gambar']['tmp_name'], $upload_dir . $file_name)) {
+                $gambar = $file_name;
             } else {
-                $error = "Format file tidak didukung. Hanya JPG, JPEG, PNG, dan GIF yang diperbolehkan.";
+                $error = "Gagal mengunggah gambar.";
             }
         }
+    }
 
+    if ($id_peraturan && $pertanyaan && $a && $b && $c && $d && $kunci_jawaban) {
         if ($op == 'edit') { // Update
             if ($gambar) {
-                $sql = "UPDATE tbl_soal SET pertanyaan = '$pertanyaan', gambar = '$gambar', a = '$a', b = '$b', c = '$c', d = '$d', kunci_jawaban = '$kunci_jawaban' WHERE id = '$id'";
+                $sql = "UPDATE tbl_soal SET id_peraturan = '$id_peraturan', pertanyaan = '$pertanyaan', a = '$a', 
+                        b = '$b', c = '$c', d = '$d', kunci_jawaban = '$kunci_jawaban', gambar = '$gambar' 
+                        WHERE id_soal = '$id_soal'";
             } else {
-                $sql = "UPDATE tbl_soal SET pertanyaan = '$pertanyaan', a = '$a', b = '$b', c = '$c', d = '$d', kunci_jawaban = '$kunci_jawaban' WHERE id = '$id'";
+                $sql = "UPDATE tbl_soal SET id_peraturan = '$id_peraturan', pertanyaan = '$pertanyaan', a = '$a', 
+                        b = '$b', c = '$c', d = '$d', kunci_jawaban = '$kunci_jawaban' 
+                        WHERE id_soal = '$id_soal'";
             }
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
-                $sukses = "Data berhasil diperbarui.";
+                $sukses = "Soal berhasil diperbarui.";
             } else {
-                $error = "Data gagal diperbarui.";
+                $error = "Gagal memperbarui soal.";
             }
         } else { // Insert
-            $sql = "INSERT INTO tbl_soal (pertanyaan, gambar, a, b, c, d, kunci_jawaban) VALUES ('$pertanyaan', '$gambar', '$a', '$b', '$c', '$d', '$kunci_jawaban')";
+            $sql = "INSERT INTO tbl_soal (id_peraturan, pertanyaan, a, b, c, d, kunci_jawaban, gambar) 
+                    VALUES ('$id_peraturan', '$pertanyaan', '$a', '$b', '$c', '$d', '$kunci_jawaban', '$gambar')";
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
-                $sukses = "Berhasil menambahkan data baru.";
+                $sukses = "Berhasil menambahkan soal baru.";
             } else {
-                $error = "Gagal menambahkan data baru.";
+                $error = "Gagal menambahkan soal.";
             }
         }
     } else {
@@ -128,9 +140,11 @@ if (isset($_POST['submit'])) {
     }
 }
 
-// Fetch Data
+// Ambil data soal
+$query = "SELECT tbl_soal.*, tbl_pengaturan.nama_ujian FROM tbl_soal JOIN tbl_pengaturan ON tbl_soal.id_peraturan = tbl_pengaturan.id_peraturan";
+$result = $koneksi->query($query);
+
 $urut = 1;
-$result = $koneksi->query("SELECT * FROM tbl_soal");
 ?>
 
 <!DOCTYPE html>
@@ -159,10 +173,9 @@ $result = $koneksi->query("SELECT * FROM tbl_soal");
                     <i class="bi bi-backspace-fill"></i>
                     <span>Kembali</span>
                 </a>
-                <!-- Card: Kelola Materi -->
                 <div class="card" style="border-radius: 20px;">
                     <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                        Kelola Peraturan Soal
+                        Kelola Soal
                     </div>
                     <div class="card-body">
                         <!-- Tampilkan pesan error jika ada -->
@@ -192,50 +205,68 @@ $result = $koneksi->query("SELECT * FROM tbl_soal");
                         <!-- Form untuk menambah atau mengedit data -->
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="mb-3 row">
+                                <label for="nama_ujian" class="col-sm-2 col-form-label">Nama Soal</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="id_peraturan" id="nama_ujian" required>
+                                        <?php
+                                        // Ambil data nama_ujian dari tbl_pengaturan
+                                        $result_peraturan = $koneksi->query("SELECT id_peraturan, nama_ujian FROM tbl_pengaturan");
+                                        while ($row_peraturan = $result_peraturan->fetch_assoc()) {
+                                            echo "<option value='" . $row_peraturan['id_peraturan'] . "'>" . $row_peraturan['nama_ujian'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
                                 <label for="pertanyaan" class="col-sm-2 col-form-label">Pertanyaan</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="pertanyaan" placeholder="Pertanyaan" id="pertanyaan" value="<?php echo isset($pertanyaan) ? htmlspecialchars($pertanyaan) : ''; ?>" id="nama_ujian" required>
+                                    <textarea class="form-control" placeholder="Masukkan pertanyaan" name="pertanyaan" id="pertanyaan" required><?php echo isset($pertanyaan) ? htmlspecialchars($pertanyaan) : ''; ?></textarea>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="gambar" class="col-sm-2 col-form-label">Gambar (Opsional)</label>
+                                <label for="gambar" class="col-sm-2 col-form-label">Gambar</label>
                                 <div class="col-sm-10">
-                                    <input type="file" class="form-control" placeholder="Gambar (Opsional)" name="gambar" value="<?php echo isset($gambar) ? htmlspecialchars($gambar) : ''; ?>" id="gambar">
+                                    <input type="file" class="form-control" name="gambar" id="gambar">
+                                    <?php if (!empty($gambar)) : ?>
+                                        <img src="gambar_soal/<?php echo htmlspecialchars($gambar); ?>" alt="Gambar Soal" style="max-width: 100px; margin-top: 10px;">
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="a" class="col-sm-2 col-form-label">Pilihan A</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" placeholder="A" name="a" id="a" value="<?php echo isset($a) ? htmlspecialchars($a) : ''; ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="a" class="col-sm-2 col-form-label">Opsi Jawaban A</label>
+                                <label for="b" class="col-sm-2 col-form-label">Pilihan B</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="A" name="a" id="a" value="<?php echo isset($a) ? htmlspecialchars($a) : ''; ?>" id="a" required>
+                                    <input type="text" class="form-control" placeholder="B" name="b" id="b" value="<?php echo isset($b) ? htmlspecialchars($b) : ''; ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="b" class="col-sm-2 col-form-label">Opsi Jawaban B</label>
+                                <label for="c" class="col-sm-2 col-form-label">Pilihan C</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="B" name="b" value="<?php echo isset($b) ? htmlspecialchars($b) : ''; ?>" id="b" required>
+                                    <input type="text" class="form-control" placeholder="C" name="c" id="c" value="<?php echo isset($c) ? htmlspecialchars($c) : ''; ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="c" class="col-sm-2 col-form-label">Opsi Jawaban C</label>
+                                <label for="d" class="col-sm-2 col-form-label">Pilihan D</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="C" name="c" value="<?php echo isset($c) ? htmlspecialchars($c) : ''; ?>" id="c" required>
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="d" class="col-sm-2 col-form-label">Opsi Jawaban d</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="D" name="d" value="<?php echo isset($d) ? htmlspecialchars($d) : ''; ?>" id="d" required>
+                                    <input type="text" class="form-control" placeholder="D" name="d" id="d" value="<?php echo isset($d) ? htmlspecialchars($d) : ''; ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3 row">
                                 <label for="kunci_jawaban" class="col-sm-2 col-form-label">Kunci Jawaban</label>
                                 <div class="col-sm-10">
-                                    <select name="kunci_jawaban" id="kunci_jawaban" class="form-select" required>
+                                    <select class="form-control" name="kunci_jawaban" id="kunci_jawaban" required>
                                         <option value="" disabled selected>Pilih Kunci Jawaban</option>
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>
-                                        <option value="C">C</option>
-                                        <option value="D">D</option>
+                                        <option value="a" <?php echo (isset($kunci_jawaban) && $kunci_jawaban == 'a') ? 'selected' : ''; ?>>A</option>
+                                        <option value="b" <?php echo (isset($kunci_jawaban) && $kunci_jawaban == 'b') ? 'selected' : ''; ?>>B</option>
+                                        <option value="c" <?php echo (isset($kunci_jawaban) && $kunci_jawaban == 'c') ? 'selected' : ''; ?>>C</option>
+                                        <option value="d" <?php echo (isset($kunci_jawaban) && $kunci_jawaban == 'd') ? 'selected' : ''; ?>>D</option>
                                     </select>
                                 </div>
                             </div>
@@ -260,13 +291,14 @@ $result = $koneksi->query("SELECT * FROM tbl_soal");
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
+                                        <th scope="col">Nama Ujian</th>
                                         <th scope="col">Pertanyaan</th>
-                                        <th scope="col">Gambar</th>
-                                        <th scope="col">Opsi A</th>
-                                        <th scope="col">Opsi B</th>
-                                        <th scope="col">Opsi C</th>
-                                        <th scope="col">Opsi D</th>
-                                        <th scope="col">Kunci Jawaban</th>
+                                        <th scope="col">Gambar Soal</th>
+                                        <th scope="col">A</th>
+                                        <th scope="col">B</th>
+                                        <th scope="col">C</th>
+                                        <th scope="col">D</th>
+                                        <th scope="col">Kunci_jawaban</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -274,26 +306,29 @@ $result = $koneksi->query("SELECT * FROM tbl_soal");
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $urut++; ?></th>
-                                            <td scope="row"><?= htmlspecialchars($row['pertanyaan']); ?></td>
-                                            <td scope="row">
-                                                <?= $row['gambar']
-                                                    ? "<img src='" . htmlspecialchars("gambar_soal/{$row['gambar']}") . "' alt='Gambar Soal' width='100'>"
-                                                    : "Tidak ada"; ?>
-                                            </td>
-                                            <td scope="row"><?= htmlspecialchars($row['a']); ?></td>
-                                            <td scope="row"><?= htmlspecialchars($row['b']); ?></td>
-                                            <td scope="row"><?= htmlspecialchars($row['c']); ?></td>
-                                            <td scope="row"><?= htmlspecialchars($row['d']); ?></td>
-                                            <td scope="row"><?= htmlspecialchars($row['kunci_jawaban']); ?></td>
-                                            <!-- Tombol Edit -->
+                                            <td><?= htmlspecialchars($row['nama_ujian']); ?></td>
+                                            <td><?= htmlspecialchars($row['pertanyaan']); ?></td>
                                             <td>
-                                                <a href="soal.php?op=edit&id=<?= $row['id']; ?>">
+                                                <?php if (!empty($row['gambar'])) : ?>
+                                                    <img src="gambar_soal/<?php echo htmlspecialchars($row['gambar']); ?>" alt="Gambar Soal" style="max-width: 100px; height: auto;">
+                                                <?php else : ?>
+                                                    Tidak ada gambar
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= htmlspecialchars($row['a']); ?></td>
+                                            <td><?= htmlspecialchars($row['b']); ?></td>
+                                            <td><?= htmlspecialchars($row['c']); ?></td>
+                                            <td><?= htmlspecialchars($row['d']); ?></td>
+                                            <td><?= htmlspecialchars($row['kunci_jawaban']); ?></td>
+                                            <td>
+                                                <!-- Tombol Edit -->
+                                                <a href="soal.php?op=edit&id_soal=<?= $row['id_soal']; ?>">
                                                     <button type="button" class="btn btn-warning">
                                                         <i class="bi bi-pen-fill"></i> Edit
                                                     </button>
                                                 </a>
                                                 <!-- Tombol Hapus -->
-                                                <a href="soal.php?op=delete&id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                <a href="soal.php?op=delete&id_soal=<?= $row['id_soal']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
                                                     <button type="button" class="btn btn-danger">
                                                         <i class="bi bi-trash-fill"></i> Hapus
                                                     </button>
@@ -306,23 +341,27 @@ $result = $koneksi->query("SELECT * FROM tbl_soal");
                         </div>
                     </div>
                 </div>
+</body>
 
-            </main>
+</html>
 
 
-            <?php include 'footer.php'; ?>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="guru_home.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script>
-        function navigateToPage() {
-            window.history.back();
-        }
-    </script>
+</main>
+
+
+<?php include 'footer.php'; ?>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="guru_home.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+<script>
+    function navigateToPage() {
+        window.history.back();
+    }
+</script>
 </body>
 
 </html>

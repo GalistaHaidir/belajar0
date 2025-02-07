@@ -27,6 +27,7 @@ $error = "";
 
 $id = "";
 $title = "";
+$category = "";
 $description = "";
 $file_path = "";
 
@@ -60,6 +61,7 @@ if ($op == 'edit') {
     $q1 = mysqli_query($koneksi, $sql1);
     $r1 = mysqli_fetch_array($q1);
     $title = $r1['title'];
+    $category = $r1['category'];
     $description = $r1['description'];
     $file_path = $r1['file_path'];
     if ($title == '') {
@@ -70,6 +72,7 @@ if ($op == 'edit') {
 // Proses Create dan Update
 if (isset($_POST['submit'])) {
     $title = $_POST['title'];
+    $category = $_POST['category'];
     $description = $_POST['description'];
     $file_path = '';
 
@@ -84,7 +87,7 @@ if (isset($_POST['submit'])) {
             if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
                 unlink($r1['file_path']); // Menghapus file lama
             }
-            $sql1 = "UPDATE materi SET title = '$title', description = '$description', file_path = '$file_path' WHERE id = '$id'";
+            $sql1 = "UPDATE materi SET title = '$title', category = '$category', description = '$description', file_path = '$file_path' WHERE id = '$id'";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
                 $sukses = "PDF berhasil diperbarui";
@@ -92,7 +95,7 @@ if (isset($_POST['submit'])) {
                 $error = "PDF gagal diperbarui";
             }
         } else { // Insert
-            $sql1 = "INSERT INTO materi (title, description, file_path) VALUES ('$title', '$description', '$file_path')";
+            $sql1 = "INSERT INTO materi (title, category, description, file_path) VALUES ('$title', '$category', '$description', '$file_path')";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
                 $sukses = "PDF berhasil diupload";
@@ -168,6 +171,17 @@ if (isset($_POST['submit'])) {
                                 </div>
                             </div>
                             <div class="mb-3 row">
+                                <label for="category" class="col-sm-2 col-form-label">Kategori Materi</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="category" id="category" required>
+                                        <option value="" disabled <?php echo empty($category) ? 'selected' : ''; ?>>Pilih Kategori Materi</option>
+                                        <option value="html" <?php echo $category === 'html' ? 'selected' : ''; ?>>HTML</option>
+                                        <option value="css" <?php echo $category === 'css' ? 'selected' : ''; ?>>CSS</option>
+                                        <option value="javascript" <?php echo $category === 'javascript' ? 'selected' : ''; ?>>JavaScript</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
                                 <label for="description" class="col-sm-2 col-form-label">Capaian Pembelajaran</label>
                                 <div class="col-sm-10">
                                     <textarea class="form-control" placeholder="Capaian Pembelajaran" name="description" id="description" required><?php echo $description ?></textarea>
@@ -201,6 +215,7 @@ if (isset($_POST['submit'])) {
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Deskripsi Materi</th>
+                                        <th scope="col">Kategori Materi</th>
                                         <th scope="col">Capaian Pembelajaran</th>
                                         <th scope="col">File Materi</th>
                                         <th scope="col">Aksi</th>
@@ -214,12 +229,14 @@ if (isset($_POST['submit'])) {
                                     while ($r2 = mysqli_fetch_array($q2)) {
                                         $id          = $r2['id'];
                                         $title       = $r2['title'];
+                                        $category    = $r2['category'];
                                         $description = $r2['description'];
                                         $file_path   = $r2['file_path'];
                                     ?>
                                         <tr>
                                             <th scope="row"><?php echo $urut++ ?></th>
                                             <td><?php echo $title ?></td>
+                                            <td><?php echo $category ?></td>
                                             <td><?php echo $description ?></td>
                                             <td>
                                                 <a href="<?php echo $file_path ?>" target="_blank">

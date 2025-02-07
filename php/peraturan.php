@@ -23,7 +23,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     $fotoProfil = "default.jpg";
 }
 // Inisialisasi variabel
-$id = "";
+$id_peraturan = "";
 $nama_ujian = "";
 $waktu = "";
 $nilai_minimal = "";
@@ -41,8 +41,8 @@ if (isset($_GET['op'])) {
 
 // Handle Delete
 if ($op == 'delete') {
-    $id = $_GET['id'];
-    $sql = "DELETE FROM tbl_pengaturan WHERE id = '$id'";
+    $id_peraturan = $_GET['id_peraturan'];
+    $sql = "DELETE FROM tbl_pengaturan WHERE id_peraturan = '$id_peraturan'";
     $q = mysqli_query($koneksi, $sql);
     if ($q) {
         $sukses = "Berhasil menghapus data.";
@@ -53,8 +53,8 @@ if ($op == 'delete') {
 
 // Handle Edit
 if ($op == 'edit') {
-    $id = $_GET['id'];
-    $sql = "SELECT * FROM tbl_pengaturan WHERE id = '$id'";
+    $id_peraturan = $_GET['id_peraturan'];
+    $sql = "SELECT * FROM tbl_pengaturan WHERE id_peraturan = '$id_peraturan'";
     $q = mysqli_query($koneksi, $sql);
     $r = mysqli_fetch_array($q);
     $nama_ujian = $r['nama_ujian'];
@@ -222,13 +222,13 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
                                             <td><?= htmlspecialchars($row['peraturan']); ?></td>
                                             <td>
                                                 <!-- Tombol Edit -->
-                                                <a href="peraturan.php?op=edit&id=<?= $row['id']; ?>">
+                                                <a href="peraturan.php?op=edit&id_peraturan=<?= $row['id_peraturan']; ?>">
                                                     <button type="button" class="btn btn-warning">
                                                         <i class="bi bi-pen-fill"></i> Edit
                                                     </button>
                                                 </a>
                                                 <!-- Tombol Hapus -->
-                                                <a href="peraturan.php?op=delete&id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                <a href="peraturan.php?op=delete&id_peraturan=<?= $row['id_peraturan']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
                                                     <button type="button" class="btn btn-danger">
                                                         <i class="bi bi-trash-fill"></i> Hapus
                                                     </button>
