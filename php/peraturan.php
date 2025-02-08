@@ -76,7 +76,7 @@ if (isset($_POST['submit'])) {
 
     if ($nama_ujian && $waktu && $nilai_minimal && $peraturan) {
         if ($op == 'edit') { // Update
-            $sql = "UPDATE tbl_pengaturan SET nama_ujian = '$nama_ujian', waktu = '$waktu', nilai_minimal = '$nilai_minimal', peraturan = '$peraturan' WHERE id = '$id'";
+            $sql = "UPDATE tbl_pengaturan SET nama_ujian = '$nama_ujian', waktu = '$waktu', nilai_minimal = '$nilai_minimal', peraturan = '$peraturan' WHERE id_peraturan = '$id_peraturan'";
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
                 $sukses = "Data berhasil diperbarui.";
@@ -163,7 +163,7 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
                             <div class="mb-3 row">
                                 <label for="nama_ujian" class="col-sm-2 col-form-label">Nama Soal</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="nama_ujian" placeholder="Nama Soal" value="<?php echo isset($nama_ujian) ? htmlspecialchars($nama_ujian) : ''; ?>" id="nama_ujian" required>
+                                    <input type="text" class="form-control" name="nama_ujian" placeholder="Nama Soal" value="<?php echo isset($nama_ujian) ? htmlspecialchars($nama_ujian) : ''; ?>" id_peraturan="nama_ujian" required>
                                 </div>
                             </div>
                             <div class="mb-3 row">

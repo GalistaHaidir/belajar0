@@ -24,7 +24,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 }
 
 // Inisialisasi variabel
-$id = "";
+$id_nilai = "";
 $id_pengguna = "";
 $benar = "";
 $salah = "";
@@ -45,8 +45,8 @@ if (isset($_GET['op'])) {
 
 // Handle Delete
 if ($op == 'delete') {
-    $id = $_GET['id'];
-    $sql = "DELETE FROM tbl_nilai WHERE id = '$id'";
+    $id_nilai = $_GET['id_nilai'];
+    $sql = "DELETE FROM tbl_nilai WHERE id_nilai = '$id_nilai'";
     $q = mysqli_query($koneksi, $sql);
     if ($q) {
         $sukses = "Berhasil menghapus data.";
@@ -57,8 +57,8 @@ if ($op == 'delete') {
 
 // Handle Edit
 if ($op == 'edit') {
-    $id = $_GET['id'];
-    $sql = "SELECT * FROM tbl_nilai WHERE id = '$id'";
+    $id_nilai = $_GET['id_nilai'];
+    $sql = "SELECT * FROM tbl_nilai WHERE id_nilai = '$id_nilai'";
     $q = mysqli_query($koneksi, $sql);
     $r = mysqli_fetch_array($q);
     $id_pengguna = $r['id_pengguna'];
@@ -87,7 +87,7 @@ if (isset($_POST['submit'])) {
     // Validasi input
     if ($id_pengguna && $benar && $salah && $kosong && $nilai && $tanggal && $status) {
         if ($op == 'edit') { // Update
-            $sql = "UPDATE tbl_nilai SET id_pengguna = '$id_pengguna', benar = '$benar', salah = '$salah', kosong = '$kosong', nilai = '$nilai', tanggal = '$tanggal', status = '$status' WHERE id = '$id'";
+            $sql = "UPDATE tbl_nilai SET id_pengguna = '$id_pengguna', benar = '$benar', salah = '$salah', kosong = '$kosong', nilai = '$nilai', tanggal = '$tanggal', status = '$status' WHERE id_nilai = '$id_nilai'";
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
                 $sukses = "Data berhasil diperbarui.";
@@ -108,10 +108,20 @@ if (isset($_POST['submit'])) {
     }
 }
 
-// Fetch Data
+// Fetch Data with JOIN to include namaLengkap
+$query = "SELECT tbl_nilai.*, pengguna.namaLengkap FROM tbl_nilai JOIN pengguna ON tbl_nilai.id_pengguna = pengguna.id_pengguna";
+$result = $koneksi->query($query);
+
+// Check if the query was successful
+if (!$result) {
+    die("Query Error: " . $koneksi->error);
+}
+
+// Display Data
 $urut = 1;
-$result = $koneksi->query("SELECT * FROM tbl_nilai");
 ?>
+
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -171,11 +181,21 @@ $result = $koneksi->query("SELECT * FROM tbl_nilai");
                         <!-- Form untuk menambah atau mengedit data -->
                         <form action="" method="POST">
                             <div class="mb-3 row">
-                                <label for="id_pengguna" class="col-sm-2 col-form-label">Id Pengguna</label>
+                                <label for="namaLengkap" class="col-sm-2 col-form-label">Nama Pengguna</label>
                                 <div class="col-sm-10">
-                                    <input type="number" class="form-control" name="id_pengguna" placeholder="Id Pengguna" value="<?php echo isset($id_pengguna) ? (int) $id_pengguna : ''; ?>" required>
+                                    <select class="form-control" name="id_pengguna" id="namaLengkap" required>
+                                        <option value="" disabled selected>-- Pilih Nama Pengguna --</option>
+                                        <?php
+                                        // Ambil data namaLengkap dari tabel pengguna
+                                        $result_pengguna = $koneksi->query("SELECT id_pengguna, namaLengkap FROM pengguna");
+                                        while ($row_pengguna = $result_pengguna->fetch_assoc()) {
+                                            echo "<option value='" . $row_pengguna['id_pengguna'] . "'>" . $row_pengguna['namaLengkap'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
                             </div>
+
                             <div class="mb-3 row">
                                 <label for="benar" class="col-sm-2 col-form-label">Jumlah Jawaban Benar</label>
                                 <div class="col-sm-10">
@@ -186,6 +206,12 @@ $result = $koneksi->query("SELECT * FROM tbl_nilai");
                                 <label for="salah" class="col-sm-2 col-form-label">Jumlah Jawaban Salah</label>
                                 <div class="col-sm-10">
                                     <input type="number" class="form-control" placeholder="Jumlah Jawaban Salah" name="salah" id="salah" value="<?php echo isset($salah) ? (int) $salah : ''; ?>" required>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="kosong" class="col-sm-2 col-form-label">Jumlah Jawaban Kosong</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" placeholder="Jumlah Jawaban Kosong" name="kosong" id="kosong" value="<?php echo isset($kosong) ? (int) $kosong : ''; ?>" required>
                                 </div>
                             </div>
                             <div class="mb-3 row">
@@ -222,7 +248,7 @@ $result = $koneksi->query("SELECT * FROM tbl_nilai");
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Id Pengguna</th>
+                                        <th scope="col">Nama Pengguna</th>
                                         <th scope="col">Jawaban Benar</th>
                                         <th scope="col">Jawaban Salah</th>
                                         <th scope="col">Jawaban Kosong</th>
@@ -236,7 +262,7 @@ $result = $koneksi->query("SELECT * FROM tbl_nilai");
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $urut++; ?></th>
-                                            <td><?= (int)$row['id_pengguna']; ?></td>
+                                            <td><?= htmlspecialchars($row['namaLengkap']); ?></td>
                                             <td><?= (int)$row['benar']; ?> </td>
                                             <td><?= (int)$row['salah']; ?></td>
                                             <td><?= (int)$row['kosong']; ?></td>
@@ -245,13 +271,13 @@ $result = $koneksi->query("SELECT * FROM tbl_nilai");
                                             <td><?= htmlspecialchars($row['status']); ?></td>
                                             <td>
                                                 <!-- Tombol Edit -->
-                                                <a href="nilai.php?op=edit&id=<?= $row['id']; ?>">
+                                                <a href="nilai.php?op=edit&id_nilai=<?= $row['id_nilai']; ?>">
                                                     <button type="button" class="btn btn-warning">
                                                         <i class="bi bi-pen-fill"></i> Edit
                                                     </button>
                                                 </a>
                                                 <!-- Tombol Hapus -->
-                                                <a href="nilai.php?op=delete&id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                <a href="nilai.php?op=delete&id_nilai=<?= $row['id_nilai']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
                                                     <button type="button" class="btn btn-danger">
                                                         <i class="bi bi-trash-fill"></i> Hapus
                                                     </button>

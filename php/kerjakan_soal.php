@@ -52,20 +52,58 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
                 <div class="container mt-5">
                     <h1>Pilih Ujian</h1>
                     <div class="row">
-                        <?php while ($row = $result->fetch_assoc()) { ?>
+                        <?php
+                        $id_pengguna = $_SESSION['id_pengguna']; // Ambil ID siswa yang sedang login
+
+                        while ($row = $result->fetch_assoc()) {
+                            $id_peraturan = $row['id_peraturan'];
+
+                            // Ambil data ujian terbaru berdasarkan ID atau tanggal terbaru
+                            $cek_ujian = $koneksi->query("
+                SELECT status, nilai 
+                FROM tbl_nilai 
+                WHERE id_pengguna = '$id_pengguna' AND id_peraturan = '$id_peraturan' 
+                ORDER BY id_nilai DESC LIMIT 1
+            ");
+
+                            $sudah_ujian = $cek_ujian->num_rows > 0;
+                            $data_nilai = ($sudah_ujian) ? $cek_ujian->fetch_assoc() : null;
+
+                            // Ambil status dan nilai terbaru
+                            $status_ujian = $data_nilai['status'] ?? null;
+                            $nilai = $data_nilai['nilai'] ?? null;
+
+                            // Konversi status ke huruf kecil agar perbandingan lebih fleksibel
+                            $status_lower = strtolower(trim($status_ujian));
+                        ?>
                             <div class="col-md-4 mb-4">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title">Ujian ID: <?= $row['id_peraturan']; ?></h5>
+                                        <h5 class="card-title">Nama Ujian: <?= $row['nama_ujian']; ?></h5>
                                         <p class="card-text">Waktu Ujian: <?= $row['waktu']; ?> menit</p>
-                                        <a href="ujian.php?id_peraturan=<?= $row['id_peraturan']; ?>" class="btn btn-primary">Mulai Ujian</a>
+
+                                        <?php if ($sudah_ujian) { ?>
+                                            <p class="card-text">Nilai Anda: <strong><?= $nilai; ?></strong></p>
+                                        <?php } ?>
+
+                                        <?php if (!$sudah_ujian) { ?>
+                                            <a href="ujian.php?id_peraturan=<?= $row['id_peraturan']; ?>" class="btn btn-primary">Mulai Ujian</a>
+                                        <?php } elseif ($status_lower == 'tidak lulus') { ?>
+                                            <a href="ujian.php?id_peraturan=<?= $row['id_peraturan']; ?>" class="btn btn-warning">Coba Lagi</a>
+                                        <?php } else { ?>
+                                            <button class="btn btn-secondary" disabled>Sudah Lulus</button>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
                         <?php } ?>
                     </div>
                 </div>
+
             </main>
+
+
+
 
             <?php include 'footer.php'; ?>
         </div>

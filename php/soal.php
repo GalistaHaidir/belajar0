@@ -208,6 +208,7 @@ $urut = 1;
                                 <label for="nama_ujian" class="col-sm-2 col-form-label">Nama Soal</label>
                                 <div class="col-sm-10">
                                     <select class="form-control" name="id_peraturan" id="nama_ujian" required>
+                                        <option value="" disabled selected>-- Pilih Nama Ujian --</option>
                                         <?php
                                         // Ambil data nama_ujian dari tbl_pengaturan
                                         $result_peraturan = $koneksi->query("SELECT id_peraturan, nama_ujian FROM tbl_pengaturan");

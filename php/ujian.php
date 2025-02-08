@@ -70,14 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Simpan hasil ke database
     $query_nilai = "INSERT INTO tbl_nilai (id_pengguna, id_peraturan, benar, salah, kosong, nilai, tanggal, status)
                     VALUES ('$id_pengguna', '$id_peraturan', '$benar', '$salah', '$kosong', '$nilai', NOW(), '$status')";
-    mysqli_query($koneksi, $query_nilai);
 
-    // Redirect ke halaman hasil
-    header("Location: hasil.php?id_peraturan=$id_peraturan");
-    exit();
+    if (mysqli_query($koneksi, $query_nilai)) {
+        // Redirect ke halaman hasil
+        header("Location: kerjakan_soal.php?id_peraturan=$id_peraturan");
+        exit();
+    } else {
+        // Tampilkan pesan error jika query gagal
+        echo "Error: " . mysqli_error($koneksi);
+    }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -150,19 +153,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                                                 <img src="gambar_soal/<?php echo $soal['gambar']; ?>" class="img-fluid mb-3 d-block mx-auto" width="200">
                                             <?php endif; ?>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="A">
+                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="a">
                                                 <label class="form-check-label"><?php echo $soal['a']; ?></label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="B">
+                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="b">
                                                 <label class="form-check-label"><?php echo $soal['b']; ?></label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="C">
+                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="c">
                                                 <label class="form-check-label"><?php echo $soal['c']; ?></label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="D">
+                                                <input class="form-check-input" type="radio" name="jawaban_<?php echo $soal['id_soal']; ?>" value="d">
                                                 <label class="form-check-label"><?php echo $soal['d']; ?></label>
                                             </div>
                                         </div>
