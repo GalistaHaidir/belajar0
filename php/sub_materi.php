@@ -82,7 +82,7 @@ $q1 = mysqli_query($koneksi, $sql1);
                                 echo "    <div class='card shadow-sm'>";
                                 echo "        <div class='card-body'>";
                                 echo "            <h5 class='card-title' style='text-transform: capitalize;'>" . htmlspecialchars($row['title']) . "</h5>";
-                                echo "            <a href='detail_materi.php?category=" . urlencode($row['category']) . "&id=" . $row['id'] . "' class='btn btn-outline-primary'>Buka Materi</a>";
+                                echo "            <a href='detail_materi.php?category=" . urlencode($row['category']) . "&id_materi=" . $row['id_materi'] . "' class='btn btn-outline-primary'>Buka Materi</a>";
                                 echo "        </div>";
                                 echo "    </div>";
                                 echo "</div>";

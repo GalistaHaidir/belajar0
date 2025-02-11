@@ -115,106 +115,46 @@ if (isset($_POST['submit'])) {
                     <i class="bi bi-backspace-fill"></i>
                     <span>Kembali</span>
                 </a>
-                <!-- Card: Kelola Materi -->
-                <div class="card" style="border-radius: 20px;">
-                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                        Kelola Tugas
-                    </div>
-                    <div class="card-body">
-                        <?php if (!empty($error)) { ?>
-                            <div id="alert-error" class="alert alert-danger col-sm-12">
-                                <ul><?php echo $error; ?></ul>
-                            </div>
-                            <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelola_tugas.php";
-                                }, 5000);
-                            </script>
-                        <?php } ?>
-
-                        <?php if (!empty($sukses)) { ?>
-                            <div id="alert-success" class="alert alert-success col-sm-12">
-                                <ul><?php echo $sukses; ?></ul>
-                            </div>
-                            <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelola_tugas.php";
-                                }, 5000);
-                            </script>
-                        <?php } ?>
-
-                        <form action="" method="POST" enctype="multipart/form-data">
-                            <div class="mb-3 row">
-                                <label for="tanggal" class="col-sm-2 col-form-label">Tanggal</label>
-                                <div class="col-sm-10">
-                                    <input type="date" class="form-control" name="tanggal" value="<?php echo $tanggal ?>" id="tanggal" required>
+                <div class="mb-3 mt-2">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='kelompok_crud.php';">
+                                <div class="card-body py-4 text-center">
+                                    <div class="icon mb-3">
+                                        <i class="fas fa-cogs fa-3x"></i> <!-- Ikon untuk kartu -->
+                                    </div>
+                                    <h5 class="card-title">Kelola Nama Kelompok</h5>
+                                    <p class="card-text">Atur peraturan pengerjaan soal sesuai kebutuhan.</p>
                                 </div>
                             </div>
-                            <div class="mb-3 row">
-                                <label for="description" class="col-sm-2 col-form-label">Deskripsi Tugas</label>
-                                <div class="col-sm-10">
-                                    <textarea class="form-control" placeholder="Deskripsi Tugas" name="tugas" id="tugas" required><?php echo $tugas ?></textarea>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='akses_kelompok.php';">
+                                <div class="card-body py-4 text-center">
+                                    <div class="icon mb-3">
+                                        <i class="fas fa-book fa-3x"></i> <!-- Ikon untuk kartu -->
+                                    </div>
+                                    <h5 class="card-title">Kelola Akses Kelompok</h5>
+                                    <p class="card-text">Tambahkan, edit, atau hapus soal untuk ujian.</p>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" name="submit" class="btn btn-primary">
-                                    <i class="bi bi-upload"></i> Simpan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                        </div>
 
-                <!-- Card: Data Materi -->
-                <div class="card mt-4" style="border-radius: 20px;">
-                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                        Data Tugas
-                    </div>
-                    <div class="card-body">
-                        <!-- Add a wrapper div for the table -->
-                        <div style="max-height: 350px; overflow-y: auto;">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Tanggal</th>
-                                        <th scope="col">Deskripsi Tugas</th>
-                                        <th scope="col">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql2 = "SELECT * FROM tugas ORDER BY id_tugas DESC";
-                                    $q2 = mysqli_query($koneksi, $sql2);
-                                    $urut = 1;
-                                    while ($r2 = mysqli_fetch_array($q2)) {
-                                        $id_tugas                 = $r2['id_tugas'];
-                                        $tanggal            = $r2['tanggal'];
-                                        $tugas    = $r2['tugas'];
-                                    ?>
-                                        <tr>
-                                            <th scope="row"><?php echo $urut++ ?></th>
-                                            <td><?php echo $tanggal ?></td>
-                                            <td><?php echo $tugas ?></td>
-                                            <td>
-                                                <a href="kelola_tugas.php?op=edit&id_tugas=<?php echo $id_tugas ?>">
-                                                    <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
-                                                </a>
-                                                <a href="kelola_tugas.php?op=delete&id_tugas=<?php echo $id_tugas ?>" onclick="return confirm('Yakin ingin menghapus tugas ini?')">
-                                                    <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
+                        <div class="col-12 col-md-4">
+                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='atur_tugas.php';">
+                                <div class="card-body py-4 text-center">
+                                    <div class="icon mb-3">
+                                        <i class="fas fa-chart-bar fa-3x"></i> <!-- Ikon untuk kartu -->
+                                    </div>
+                                    <h5 class="card-title">Kelola Tugas</h5>
+                                    <p class="card-text">Analisis nilai peserta ujian.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </main>
-
-
             <?php include 'footer.php'; ?>
         </div>
     </div>

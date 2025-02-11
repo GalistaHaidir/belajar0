@@ -49,7 +49,13 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <div class="container mt-5">
+                <a class="btn btn-outline-danger"
+                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i>
+                    <span>Kembali</span>
+                </a>
+                <div class="container">
                     <h1>Pilih Ujian</h1>
                     <div class="row">
                         <?php
@@ -101,9 +107,6 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
                 </div>
 
             </main>
-
-
-
 
             <?php include 'footer.php'; ?>
         </div>

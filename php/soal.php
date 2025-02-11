@@ -181,24 +181,43 @@ $urut = 1;
                         <!-- Tampilkan pesan error jika ada -->
                         <?php if (!empty($error)) { ?>
                             <div id="alert-error" class="alert alert-danger col-sm-12">
-                                <ul><?php echo htmlspecialchars($error); ?></ul>
+                                <p><?php echo htmlspecialchars($error); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "soal.php";
-                                }, 5000);
+                                let timeLeftError = 5;
+                                let countdownErrorElement = document.getElementById("countdown-error");
+
+                                let timerError = setInterval(function() {
+                                    if (countdownErrorElement) {
+                                        timeLeftError--;
+                                        countdownErrorElement.innerText = timeLeftError;
+                                        if (timeLeftError <= 0) {
+                                            clearInterval(timerError);
+                                            window.location.href = "soal.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
 
-                        <!-- Tampilkan pesan sukses jika ada -->
                         <?php if (!empty($sukses)) { ?>
                             <div id="alert-success" class="alert alert-success col-sm-12">
-                                <ul><?php echo htmlspecialchars($sukses); ?></ul>
+                                <p><?php echo htmlspecialchars($sukses); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "soal.php";
-                                }, 5000);
+                                let timeLeftSuccess = 5;
+                                let countdownSuccessElement = document.getElementById("countdown-success");
+
+                                let timerSuccess = setInterval(function() {
+                                    if (countdownSuccessElement) {
+                                        timeLeftSuccess--;
+                                        countdownSuccessElement.innerText = timeLeftSuccess;
+                                        if (timeLeftSuccess <= 0) {
+                                            clearInterval(timerSuccess);
+                                            window.location.href = "soal.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
 
@@ -342,17 +361,15 @@ $urut = 1;
                         </div>
                     </div>
                 </div>
+            </main>
+            <?php include 'footer.php'; ?>
+        </div>
+    </div>
 </body>
 
 </html>
 
 
-</main>
-
-
-<?php include 'footer.php'; ?>
-</div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="guru_home.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

@@ -25,45 +25,52 @@ if ($result && mysqli_num_rows($result) > 0) {
 $sukses = "";
 $error = "";
 
-$id = "";
+$id_materi = "";
 $title = "";
 $category = "";
 $description = "";
 $file_path = "";
+$video_path = "";
 
 if (isset($_GET['op'])) {
     $op = $_GET['op'];
 } else {
     $op = "";
-}
-
-// Proses Delete
+} // Proses Delete
 if ($op == 'delete') {
-    $id = $_GET['id'];
-    $sql1 = "SELECT file_path FROM materi WHERE id = '$id'";
+    $id_materi = $_GET['id_materi'];
+    $sql1 = "SELECT file_path, video_path FROM materi WHERE id_materi = '$id_materi'";
     $q1 = mysqli_query($koneksi, $sql1);
     $r1 = mysqli_fetch_array($q1);
-    $file_path = $r1['file_path'];
-    unlink($file_path); // Menghapus file dari server
-    $sql2 = "DELETE FROM materi WHERE id = '$id'";
+
+    if (!empty($r1['file_path']) && file_exists($r1['file_path'])) {
+        unlink($r1['file_path']); // Menghapus file PDF dari server
+    }
+
+    if (!empty($r1['video_path']) && file_exists($r1['video_path'])) {
+        unlink($r1['video_path']); // Menghapus video dari server
+    }
+
+    $sql2 = "DELETE FROM materi WHERE id_materi = '$id_materi'";
     $q2 = mysqli_query($koneksi, $sql2);
     if ($q2) {
-        $sukses = "Berhasil menghapus PDF";
+        $sukses = "Berhasil menghapus materi";
     } else {
-        $error = "Gagal menghapus PDF";
+        $error = "Gagal menghapus materi";
     }
 }
 
 // Proses Edit (Read data untuk form)
 if ($op == 'edit') {
-    $id = $_GET['id'];
-    $sql1 = "SELECT * FROM materi WHERE id = '$id'";
+    $id_materi = $_GET['id_materi'];
+    $sql1 = "SELECT * FROM materi WHERE id_materi = '$id_materi'";
     $q1 = mysqli_query($koneksi, $sql1);
     $r1 = mysqli_fetch_array($q1);
     $title = $r1['title'];
     $category = $r1['category'];
     $description = $r1['description'];
     $file_path = $r1['file_path'];
+    $video_path = $r1['video_path'];
     if ($title == '') {
         $error = "Data tidak ditemukan";
     }
@@ -75,32 +82,43 @@ if (isset($_POST['submit'])) {
     $category = $_POST['category'];
     $description = $_POST['description'];
     $file_path = '';
+    $video_path = '';
 
-    // Cek apakah ada file yang diupload
+    // Cek apakah ada file PDF yang diupload
     if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
         $file_path = 'pdf/' . basename($_FILES['pdf_file']['name']);
         move_uploaded_file($_FILES['pdf_file']['tmp_name'], $file_path);
     }
 
+    // Cek apakah ada video yang diupload
+    if (isset($_FILES['video_file']) && $_FILES['video_file']['error'] == 0) {
+        $video_path = 'videos/' . basename($_FILES['video_file']['name']);
+        move_uploaded_file($_FILES['video_file']['tmp_name'], $video_path);
+    }
+
     if ($title && $description) {
         if ($op == 'edit') { // Update
-            if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
-                unlink($r1['file_path']); // Menghapus file lama
+            if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0 && !empty($r1['file_path'])) {
+                unlink($r1['file_path']); // Menghapus file PDF lama
             }
-            $sql1 = "UPDATE materi SET title = '$title', category = '$category', description = '$description', file_path = '$file_path' WHERE id = '$id'";
+            if (isset($_FILES['video_file']) && $_FILES['video_file']['error'] == 0 && !empty($r1['video_path'])) {
+                unlink($r1['video_path']); // Menghapus video lama
+            }
+
+            $sql1 = "UPDATE materi SET title = '$title', category = '$category', description = '$description', file_path = '$file_path', video_path = '$video_path' WHERE id_materi = '$id_materi'";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
-                $sukses = "PDF berhasil diperbarui";
+                $sukses = "Materi berhasil diperbarui";
             } else {
-                $error = "PDF gagal diperbarui";
+                $error = "Materi gagal diperbarui";
             }
         } else { // Insert
-            $sql1 = "INSERT INTO materi (title, category, description, file_path) VALUES ('$title', '$category', '$description', '$file_path')";
+            $sql1 = "INSERT INTO materi (title, category, description, file_path, video_path) VALUES ('$title', '$category', '$description', '$file_path', '$video_path')";
             $q1 = mysqli_query($koneksi, $sql1);
             if ($q1) {
-                $sukses = "PDF berhasil diupload";
+                $sukses = "Materi berhasil diupload";
             } else {
-                $error = "PDF gagal diupload";
+                $error = "Materi gagal diupload";
             }
         }
     } else {
@@ -108,6 +126,8 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -191,6 +211,23 @@ if (isset($_POST['submit'])) {
                                 <label for="pdf_file" class="col-sm-2 col-form-label">File Materi</label>
                                 <div class="col-sm-10">
                                     <input type="file" class="form-control" name="pdf_file" id="pdf_file" <?php echo ($op != 'edit') ? 'required' : ''; ?>>
+
+                                    <?php if (!empty($file_path)) : ?>
+                                        <p class="mt-2">File saat ini: <a href="<?php echo $file_path; ?>" target="_blank">Lihat PDF</a></p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="video_file" class="col-sm-2 col-form-label">File Video</label>
+                                <div class="col-sm-10">
+                                    <input type="file" class="form-control" name="video_file" id="video_file" <?php echo ($op != 'edit') ? 'required' : ''; ?>>
+                                    <?php if ($op == 'edit' && !empty($video_path)) : ?>
+                                        <p class="mt-2">Video saat ini:</p>
+                                        <video width="320" height="180" controls style="margin-top: 10px;">
+                                            <source src="<?php echo htmlspecialchars($video_path); ?>" type="video/mp4">
+                                            Browser Anda tidak mendukung tag video.
+                                        </video>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -218,20 +255,22 @@ if (isset($_POST['submit'])) {
                                         <th scope="col">Kategori Materi</th>
                                         <th scope="col">Capaian Pembelajaran</th>
                                         <th scope="col">File Materi</th>
+                                        <th scope="col">File Video</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql2 = "SELECT * FROM materi ORDER BY id DESC";
+                                    $sql2 = "SELECT * FROM materi ORDER BY id_materi DESC";
                                     $q2 = mysqli_query($koneksi, $sql2);
                                     $urut = 1;
                                     while ($r2 = mysqli_fetch_array($q2)) {
-                                        $id          = $r2['id'];
+                                        $id_materi   = $r2['id_materi'];
                                         $title       = $r2['title'];
                                         $category    = $r2['category'];
                                         $description = $r2['description'];
                                         $file_path   = $r2['file_path'];
+                                        $video_path  = $r2['video_path'];
                                     ?>
                                         <tr>
                                             <th scope="row"><?php echo $urut++ ?></th>
@@ -244,10 +283,16 @@ if (isset($_POST['submit'])) {
                                                 </a>
                                             </td>
                                             <td>
-                                                <a href="kelola_materi.php?op=edit&id=<?php echo $id ?>">
+                                                <video width="150" height="100" controls>
+                                                    <source src="<?php echo $video_path ?>" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            </td>
+                                            <td>
+                                                <a href="kelola_materi.php?op=edit&id_materi=<?php echo $id_materi ?>">
                                                     <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
                                                 </a>
-                                                <a href="kelola_materi.php?op=delete&id=<?php echo $id ?>" onclick="return confirm('Yakin ingin menghapus PDF ini?')">
+                                                <a href="kelola_materi.php?op=delete&id_materi=<?php echo $id_materi ?>" onclick="return confirm('Yakin ingin menghapus PDF ini?')">
                                                     <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
                                                 </a>
                                             </td>

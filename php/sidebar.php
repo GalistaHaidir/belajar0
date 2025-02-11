@@ -37,27 +37,6 @@
         </li>
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#auth3" aria-expanded="false" aria-controls="auth3">
-                <i class="bi bi-play-btn-fill" style="color:rgb(255, 0, 0);"></i>
-                <span>Vidio Tutorial</span>
-            </a>
-            <ul id="auth3" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                    <li class="sidebar-item">
-                        <a href="kelola_video.php" class="sidebar-link">
-                            Kelola Video Tutorial
-                        </a>
-                    </li>
-                <?php } ?>
-                <li class="sidebar-item">
-                    <a href="video.php" class="sidebar-link">
-                        Video Tutorial
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                 data-bs-target="#auth2" aria-expanded="false" aria-controls="auth2">
                 <i class="bi bi-pencil-fill" style="color: #ff8c00;"></i>
                 <span>Soal</span>
@@ -92,8 +71,13 @@
                     </li>
                 <?php } ?>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        Tugas
+                    <a href="tugas_individu.php" class="sidebar-link">
+                        Tugas Individu
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="tugas_kelompok.php" class="sidebar-link">
+                        Tugas Kelompok
                     </a>
                 </li>
             </ul>

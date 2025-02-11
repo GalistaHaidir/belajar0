@@ -22,10 +22,10 @@ if ($result && mysqli_num_rows($result) > 0) {
     $fotoProfil = "default.jpg";
 }
 
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$id_materi = isset($_GET['id_materi']) ? intval($_GET['id_materi']) : 0;
 
 // Fetch the data for the specific ID
-$sql = "SELECT * FROM materi WHERE id = $id";
+$sql = "SELECT * FROM materi WHERE id_materi = $id_materi";
 $result = mysqli_query($koneksi, $sql);
 
 // Check if data exists
@@ -33,12 +33,14 @@ if ($result && mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     $title = htmlspecialchars($row['title']); // Escape special characters
     $description = htmlspecialchars($row['description']); // Escape special characters
-    $file_path = htmlspecialchars($row['file_path']); // Assuming you have a 'file_path' column for the PDF
+    $file_path = htmlspecialchars($row['file_path']); // PDF file path
+    $video_path = htmlspecialchars($row['video_path']); // Video file path
 } else {
     // If no data is found, set default values
     $title = "Materi Tidak Ditemukan";
     $description = "Deskripsi tidak tersedia.";
-    $file_path = ""; // Default to empty if no file found
+    $file_path = ""; // Default to empty if no PDF found
+    $video_path = ""; // Default to empty if no video found
 }
 
 ?>
@@ -68,22 +70,55 @@ if ($result && mysqli_num_rows($result) > 0) {
                     <i class="bi bi-backspace-fill"></i>
                     <span>Kembali</span>
                 </a>
-                <div class="container">
+                <div class="container-fluid ms-3 me-3">
                     <h2 id="judulMateri" style="text-transform: capitalize;"><?php echo $title; ?></h2>
                     <hr>
 
-                    <h4>Description</h4>
-                    <p id="capaianPembelajaran"><?php echo $description; ?></p>
+                    <div class="row">
+                        <div class="col-12 col-md-2">
+                            <div class="card mb-4">
+                                <div class="card-header">Materi PDF</div>
+                                <div class="card-body">
+                                    <h4>Description</h4>
+                                    <p id="capaianPembelajaran"><?php echo $description; ?></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card PDF -->
+                        <div class="col-12 col-md-5">
+                            <div class="card mb-4">
+                                <div class="card-header">Materi PDF</div>
+                                <div class="card-body">
+                                    <?php if (!empty($file_path)) { ?>
+                                        <iframe src="<?php echo $file_path; ?>" width="100%" height="400px"></iframe>
+                                    <?php } else { ?>
+                                        <p>Tidak ada PDF yang tersedia.</p>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
 
-                    <h6>Materi PDF</h6>
-                    <?php if (!empty($file_path)) { ?>
-                        <a href="<?php echo $file_path; ?>" class="btn btn-outline-primary mb-4" target="_blank">Download PDF</a>
-                        <iframe src="<?php echo $file_path; ?>" width="100%" height="600px"></iframe>
-                    <?php } else { ?>
-                        <p>Tidak ada PDF yang tersedia.</p>
-                    <?php } ?>
+                        <!-- Card Video -->
+                        <div class="col-12 col-md-5">
+                            <div class="card mb-4">
+                                <div class="card-header">Materi Video</div>
+                                <div class="card-body">
+                                    <?php if (!empty($video_path)) { ?>
+                                        <video width="100%" height="400px" controls>
+                                            <source src="<?php echo $video_path; ?>" type="video/mp4">
+                                            Browser Anda tidak mendukung tag video.
+                                        </video>
+                                    <?php } else { ?>
+                                        <p>Tidak ada video yang tersedia.</p>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </main>
+
 
             <?php include 'footer.php'; ?>
         </div>
