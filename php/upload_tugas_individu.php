@@ -39,7 +39,7 @@ if ($result_check->num_rows > 0) {
 
 // Proses Upload File
 if ($_FILES['file_tugas']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = "uploads/tugas/"; // Direktori penyimpanan file tugas
+    $upload_dir = "uploads/"; // Direktori penyimpanan file tugas
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
@@ -53,28 +53,46 @@ if ($_FILES['file_tugas']['error'] === UPLOAD_ERR_OK) {
     // Validasi ekstensi file
     $allowed_extensions = ['pdf', 'doc', 'docx', 'zip', 'rar'];
     if (!in_array(strtolower($file_ext), $allowed_extensions)) {
-        die("Format file tidak diizinkan! Hanya boleh PDF, DOC, DOCX, ZIP, atau RAR.");
+        echo "<script>
+            alert('Format file tidak diizinkan! Hanya boleh PDF, DOC, DOCX, ZIP, atau RAR.');
+            window.history.back();
+        </script>";
+        exit;
     }
 
     // Pindahkan file ke folder tujuan
     if (move_uploaded_file($file_tmp, $file_path)) {
         // Simpan informasi pengumpulan ke database
         $query_insert = $koneksi->prepare("
-        INSERT INTO pengumpulan_tugas (id_tugas, id_pengguna, file_tugas, tanggal_upload)
-        VALUES (?, ?, ?, NOW())
-    ");
+            INSERT INTO pengumpulan_tugas (id_tugas, id_pengguna, file_tugas, tanggal_upload)
+            VALUES (?, ?, ?, NOW())
+        ");
         $query_insert->bind_param("iis", $id_tugas, $id_pengguna, $file_path);
 
         if ($query_insert->execute()) {
-            echo "Tugas berhasil dikumpulkan!";
-            header("Location: detailtugas_individu.php?id_tugas=" . $id_tugas);
+            echo "<script>
+                alert('Tugas berhasil dikumpulkan!');
+                window.location.href = 'detailtugas_individu.php?id_tugas=$id_tugas';
+            </script>";
             exit;
         } else {
-            die("Gagal menyimpan tugas ke database.");
+            echo "<script>
+                alert('Gagal menyimpan tugas ke database.');
+                window.history.back();
+            </script>";
+            exit;
         }
     } else {
-        die("Gagal mengunggah file.");
+        echo "<script>
+            alert('Gagal mengunggah file.');
+            window.history.back();
+        </script>";
+        exit;
     }
 } else {
-    die("Terjadi kesalahan saat mengunggah file.");
+    echo "<script>
+        alert('Terjadi kesalahan saat mengunggah file.');
+        window.history.back();
+    </script>";
+    exit;
 }

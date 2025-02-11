@@ -124,7 +124,7 @@ if (isset($_POST['submit'])) {
                                         <i class="fas fa-cogs fa-3x"></i> <!-- Ikon untuk kartu -->
                                     </div>
                                     <h5 class="card-title">Kelola Nama Kelompok</h5>
-                                    <p class="card-text">Atur peraturan pengerjaan soal sesuai kebutuhan.</p>
+                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
                                 </div>
                             </div>
                         </div>
@@ -136,7 +136,7 @@ if (isset($_POST['submit'])) {
                                         <i class="fas fa-book fa-3x"></i> <!-- Ikon untuk kartu -->
                                     </div>
                                     <h5 class="card-title">Kelola Akses Kelompok</h5>
-                                    <p class="card-text">Tambahkan, edit, atau hapus soal untuk ujian.</p>
+                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
                                 </div>
                             </div>
                         </div>
@@ -148,10 +148,23 @@ if (isset($_POST['submit'])) {
                                         <i class="fas fa-chart-bar fa-3x"></i> <!-- Ikon untuk kartu -->
                                     </div>
                                     <h5 class="card-title">Kelola Tugas</h5>
-                                    <p class="card-text">Analisis nilai peserta ujian.</p>
+                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='aturnilai_tugas.php';">
+                                <div class="card-body py-4 text-center">
+                                    <div class="icon mb-3">
+                                        <i class="fas fa-chart-bar fa-3x"></i> <!-- Ikon untuk kartu -->
+                                    </div>
+                                    <h5 class="card-title">Kelola Nilai</h5>
+                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </main>
