@@ -108,12 +108,60 @@ if (isset($_POST['submit'])) { // create
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kelola Akun Siswa</title>
+    <title>Kelola Akun</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="guru_home.css">
+
+    <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+        }
+
+        /* Efek shadow untuk card */
+        .custom-card {
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header dengan gradient */
+        .custom-header {
+            background: linear-gradient(135deg, #0b1915, #1d4035);
+            font-weight: bold;
+            color: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        /* Efek hover untuk tombol */
+        .btn-custom {
+            border-radius: 50px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+
+        /* Table styling */
+        .table-custom thead {
+            background: #0b1915;
+            color: white;
+        }
+
+        .table-custom tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #e9ecef;
+            transition: 0.3s;
+        }
+    </style>
 </head>
 
 <body>
@@ -123,35 +171,57 @@ if (isset($_POST['submit'])) { // create
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
                 <a class="btn btn-outline-danger"
-                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    style="border-radius: 50px; margin-bottom: 15px;"
                     onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i>
+                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
                     <span>Kembali</span>
                 </a>
-                <div class="card" style="border-radius: 20px;">
-                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                        Kelola Akun Siswa
+                <!-- Card: Kelola Nama Kelompok -->
+                <div class="card custom-card">
+                    <div class="card-header custom-header">
+                        Kelola Akun
                     </div>
                     <div class="card-body">
+                        <!-- Tampilkan pesan error jika ada -->
                         <?php if (!empty($error)) { ?>
-                            <div id="login-alert" class="alert alert-danger col-sm-12">
-                                <ul><?php echo $error; ?></ul>
+                            <div id="alert-error" class="alert alert-danger col-sm-12">
+                                <p><?php echo htmlspecialchars($error); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelola_akunsiswa.php";
-                                }, 5000); // Mengalihkan setelah 5 detik
+                                let timeLeftError = 5;
+                                let countdownErrorElement = document.getElementById("countdown-error");
+
+                                let timerError = setInterval(function() {
+                                    if (countdownErrorElement) {
+                                        timeLeftError--;
+                                        countdownErrorElement.innerText = timeLeftError;
+                                        if (timeLeftError <= 0) {
+                                            clearInterval(timerError);
+                                            window.location.href = "kelola_akunsiswa.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
 
                         <?php if (!empty($sukses)) { ?>
-                            <div id="login-alert" class="alert alert-success col-sm-12">
-                                <ul><?php echo $sukses; ?></ul>
+                            <div id="alert-success" class="alert alert-success col-sm-12">
+                                <p><?php echo htmlspecialchars($sukses); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelola_akunsiswa.php";
-                                }, 5000); // Mengalihkan setelah 5 detik
+                                let timeLeftSuccess = 5;
+                                let countdownSuccessElement = document.getElementById("countdown-success");
+
+                                let timerSuccess = setInterval(function() {
+                                    if (countdownSuccessElement) {
+                                        timeLeftSuccess--;
+                                        countdownSuccessElement.innerText = timeLeftSuccess;
+                                        if (timeLeftSuccess <= 0) {
+                                            clearInterval(timerSuccess);
+                                            window.location.href = "kelola_akunsiswa.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
                         <form action="" method="POST">
@@ -176,26 +246,26 @@ if (isset($_POST['submit'])) { // create
                             <div class="mb-3 row">
                                 <label for="username" class="col-sm-2 col-form-label">Username</label>
                                 <div class="col-sm 10">
-                                    <input type="text" class="form-control" placeholder="username" name="username" value="<?php echo $username ?>" id="username">
+                                    <input type="text" class="form-control" placeholder="Username" name="username" value="<?php echo $username ?>" id="username">
                                 </div>
                             </div>
                             <div class="mb-3 row">
                                 <label for="password" class="col-sm-2 col-form-label">Password</label>
                                 <div class="col-sm 10">
-                                    <input type="text" class="form-control" placeholder="password" name="password" value="<?php echo $password ?>" id="password">
+                                    <input type="text" class="form-control" placeholder="Password" name="password" value="<?php echo $password ?>" id="password">
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" name="submit" class="btn btn-primary">
-                                    <i class="bi bi-floppy-fill"></i>
+                            <div class="col-12 text-end">
+                                <button type="submit" name="submit" class="btn btn-primary btn-custom px-3">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="card mt-4" style="border-radius: 20px;">
-                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                        Data Akun Siswa
+                <div class="card custom-card mt-4">
+                    <div class="card-header custom-header">
+                        Data Akun
                     </div>
                     <div class="card-body">
                         <div style="max-height: 350px; overflow-y: auto;">
@@ -231,12 +301,16 @@ if (isset($_POST['submit'])) { // create
                                             <td scope="row"><?php echo $email ?></td>
                                             <td scope="row"><?php echo $username ?></td>
                                             <td scope="row"><?php echo $password ?></td>
-                                            <td scope="row">
+                                            <td>
                                                 <a href="kelola_akunsiswa.php?op=edit&id_pengguna=<?php echo $id_pengguna ?>">
-                                                    <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
+                                                    <button type="button" class="btn btn-warning btn-sm btn-custom">
+                                                        <i class="bi bi-pen-fill"></i>
+                                                    </button>
                                                 </a>
-                                                <a href="kelola_akunsiswa.php?op=delete&id_pengguna=<?php echo $id_pengguna ?>" onclick="return confirm('Yakin ingin hapus data?')">
-                                                    <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                                <a href="kelola_akunsiswa.php?op=delete&id_pengguna=<?php echo $id_pengguna ?>" onclick="return confirm('Yakin ingin menghapus kelompok ini?')">
+                                                    <button type="button" class="btn btn-danger btn-sm btn-custom">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
                                                 </a>
                                             </td>
                                         </tr>

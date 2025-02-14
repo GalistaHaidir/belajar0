@@ -8,22 +8,23 @@ $tahun = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
 // Hitung jumlah hari dalam bulan yang dipilih
 $days_in_month = cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun);
 
-// Ambil semua tanggal yang memiliki tugas
-$sql_tanggal = "SELECT DISTINCT tanggal FROM tugas";
-$result_tanggal = mysqli_query($koneksi, $sql_tanggal);
-$tanggal_tugas = [];
-while ($row = mysqli_fetch_assoc($result_tanggal)) {
-    $tanggal_tugas[] = $row['tanggal'];
+// Ambil semua dateline yang memiliki tugas
+$sql_dateline = "SELECT DISTINCT DATE(dateline) AS dateline FROM tugas";
+$result_dateline = mysqli_query($koneksi, $sql_dateline);
+$dateline_tugas = [];
+while ($row = mysqli_fetch_assoc($result_dateline)) {
+    $dateline_tugas[] = $row['dateline']; // Sekarang hanya YYYY-MM-DD
 }
 
-// Ambil daftar tugas berdasarkan tanggal
-if (isset($_GET['tanggal'])) {
-    $tanggal = $_GET['tanggal'];
-    $sql = "SELECT * FROM tugas WHERE tanggal = '$tanggal'";
+
+// Ambil daftar tugas berdasarkan dateline
+if (isset($_GET['dateline'])) {
+    $dateline = $_GET['dateline'];
+    $sql = "SELECT * FROM tugas WHERE dateline = '$dateline'";
     $result = mysqli_query($koneksi, $sql);
     $tugas = mysqli_fetch_all($result, MYSQLI_ASSOC);
 } else {
-    $tanggal = null;
+    $dateline = null;
     $tugas = [];
 }
 ?>
@@ -34,7 +35,7 @@ if (isset($_GET['tanggal'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Tugas Berdasarkan Tanggal</title>
+    <title>Daftar Tugas Berdasarkan dateline</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -62,9 +63,11 @@ if (isset($_GET['tanggal'])) {
         }
 
         .day.has-task {
-            background-color: #0d6efd;
-            color: white;
+            background-color:rgb(237, 212, 212);
+            /* Warna untuk hari ini */
+            color:rgb(87, 21, 21);
             font-weight: bold;
+            border: 2px solid #a72828;
         }
 
         .day:hover {
@@ -80,7 +83,7 @@ if (isset($_GET['tanggal'])) {
 
 <body class="bg-light">
     <div class="container my-5">
-        <h1 class="text-center mb-4">Daftar Tugas Berdasarkan Tanggal</h1>
+        <h1 class="text-center mb-4">Daftar Tugas Berdasarkan dateline</h1>
 
         <!-- Navigasi Dropdown -->
         <form method="GET" class="d-flex justify-content-center align-items-center mb-4 gap-3">
@@ -109,26 +112,31 @@ if (isset($_GET['tanggal'])) {
         <!-- Kalender -->
         <div class="calendar">
             <?php
-            $today = date('Y-m-d'); // Mendapatkan tanggal hari ini dalam format YYYY-MM-DD
+            $today = date('Y-m-d'); // Format YYYY-MM-DD
+
             for ($i = 1; $i <= $days_in_month; $i++) {
                 $current_date = $tahun . '-' . str_pad($bulan, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
-                $has_task = in_array($current_date, $tanggal_tugas) ? 'has-task' : '';
-                $is_today = ($current_date == $today) ? 'today' : ''; // Tambahkan kelas 'today' jika tanggal adalah hari ini
+
+                // Pastikan hanya mengecek tanggal (tanpa waktu)
+                $has_task = in_array($current_date, $dateline_tugas) ? 'has-task' : '';
+                $is_today = ($current_date == $today) ? 'today' : '';
+
                 echo "<div class='day $has_task $is_today' onclick=\"showTasks('$current_date')\">$i</div>";
             }
+
             ?>
         </div>
 
         <!-- Daftar Tugas -->
         <div class="task-list mt-4">
-            <h3 class="mb-3">Tugas pada Tanggal: <?php echo $tanggal ? $tanggal : 'Pilih tanggal'; ?></h3>
+            <h3 class="mb-3">Tugas pada dateline: <?php echo $dateline ? $dateline : 'Pilih dateline'; ?></h3>
             <ul class="list-group">
                 <?php if ($tugas): ?>
                     <?php foreach ($tugas as $t): ?>
-                        <li class="list-group-item"><?php echo $t['tugas']; ?></li>
+                        <li class="list-group-item"><?php echo $t['judul_tugas']; ?></li>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <li class="list-group-item">Tidak ada tugas pada tanggal ini.</li>
+                    <li class="list-group-item">Tidak ada tugas pada dateline ini.</li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -137,12 +145,11 @@ if (isset($_GET['tanggal'])) {
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function showTasks(tanggal) {
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('tanggal', tanggal);
-            window.location.search = urlParams.toString();
+        function showTasks(dateline) {
+            window.location.href = "?bulan=<?php echo $bulan; ?>&tahun=<?php echo $tahun; ?>&dateline=" + dateline;
         }
     </script>
+
 </body>
 
 </html>

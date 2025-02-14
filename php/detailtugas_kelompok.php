@@ -74,6 +74,13 @@ if (!$tugas_list) {
     <link rel="stylesheet" href="guru_home.css">
     <title>Detail Tugas Kelompok</title>
     <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+            /* Warna hijau tua */
+        }
+
         .card {
             transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -91,8 +98,10 @@ if (!$tugas_list) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <a class="btn btn-outline-danger d-flex align-items-center rounded-pill mb-3" onclick="navigateToPage()">
-                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
+                <a class="btn btn-outline-danger"
+                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    onclick="navigateToPage()">
+                    <i class="bi bi-backspace-fill"></i>
                     <span>Kembali</span>
                 </a>
 

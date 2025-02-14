@@ -141,6 +141,54 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="guru_home.css">
+    <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+            /* Warna hijau tua */
+        }
+
+        /* Efek shadow untuk card */
+        .custom-card {
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header dengan gradient */
+        .custom-header {
+            background: linear-gradient(135deg, #0b1915, #1d4035);
+            font-weight: bold;
+            color: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        /* Efek hover untuk tombol */
+        .btn-custom {
+            border-radius: 50px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+
+        /* Table styling */
+        .table-custom thead {
+            background: #0b1915;
+            color: white;
+        }
+
+        .table-custom tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #e9ecef;
+            transition: 0.3s;
+        }
+    </style>
 </head>
 
 <body>
@@ -156,30 +204,51 @@ if (isset($_POST['submit'])) {
                     <span>Kembali</span>
                 </a>
                 <!-- Card: Kelola Materi -->
-                <div class="card" style="border-radius: 20px;">
-                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <div class="card custom-card">
+                    <div class="card-header custom-header">
                         Kelola Materi
                     </div>
                     <div class="card-body">
+                        <!-- Tampilkan pesan error jika ada -->
                         <?php if (!empty($error)) { ?>
                             <div id="alert-error" class="alert alert-danger col-sm-12">
-                                <ul><?php echo $error; ?></ul>
+                                <p><?php echo htmlspecialchars($error); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelola_materi.php";
-                                }, 5000);
+                                let timeLeftError = 5;
+                                let countdownErrorElement = document.getElementById("countdown-error");
+
+                                let timerError = setInterval(function() {
+                                    if (countdownErrorElement) {
+                                        timeLeftError--;
+                                        countdownErrorElement.innerText = timeLeftError;
+                                        if (timeLeftError <= 0) {
+                                            clearInterval(timerError);
+                                            window.location.href = "kelola_materi.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
 
                         <?php if (!empty($sukses)) { ?>
                             <div id="alert-success" class="alert alert-success col-sm-12">
-                                <ul><?php echo $sukses; ?></ul>
+                                <p><?php echo htmlspecialchars($sukses); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelola_materi.php";
-                                }, 5000);
+                                let timeLeftSuccess = 5;
+                                let countdownSuccessElement = document.getElementById("countdown-success");
+
+                                let timerSuccess = setInterval(function() {
+                                    if (countdownSuccessElement) {
+                                        timeLeftSuccess--;
+                                        countdownSuccessElement.innerText = timeLeftSuccess;
+                                        if (timeLeftSuccess <= 0) {
+                                            clearInterval(timerSuccess);
+                                            window.location.href = "kelola_materi.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
 
@@ -230,9 +299,9 @@ if (isset($_POST['submit'])) {
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" name="submit" class="btn btn-primary">
-                                    <i class="bi bi-upload"></i> Simpan
+                            <div class="col-12 text-end">
+                                <button type="submit" name="submit" class="btn btn-primary btn-custom px-3">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
                                 </button>
                             </div>
                         </form>
@@ -240,8 +309,8 @@ if (isset($_POST['submit'])) {
                 </div>
 
                 <!-- Card: Data Materi -->
-                <div class="card mt-4" style="border-radius: 20px;">
-                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <div class="card custom-card mt-4">
+                    <div class="card-header custom-header">
                         Data Materi
                     </div>
                     <div class="card-body">
@@ -290,10 +359,14 @@ if (isset($_POST['submit'])) {
                                             </td>
                                             <td>
                                                 <a href="kelola_materi.php?op=edit&id_materi=<?php echo $id_materi ?>">
-                                                    <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
+                                                    <button type="button" class="btn btn-warning btn-sm btn-custom">
+                                                        <i class="bi bi-pen-fill"></i>
+                                                    </button>
                                                 </a>
                                                 <a href="kelola_materi.php?op=delete&id_materi=<?php echo $id_materi ?>" onclick="return confirm('Yakin ingin menghapus PDF ini?')">
-                                                    <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                                    <button type="button" class="btn btn-danger btn-sm btn-custom">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
                                                 </a>
                                             </td>
                                         </tr>

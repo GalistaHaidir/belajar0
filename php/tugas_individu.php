@@ -45,6 +45,14 @@ $result = $koneksi->query($query);
     <link rel="stylesheet" href="guru_home.css">
     <title>Mengerjakan Soal</title>
     <style>
+     
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+            /* Warna hijau tua */
+        }
+    
         .card {
             transition: transform 0.2s, box-shadow 0.2s;
         }

@@ -127,6 +127,13 @@ if (isset($_POST['submit'])) { // create or update
 
     <link rel="stylesheet" href="guru_home.css">
     <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+            /* Warna hijau tua */
+        }
+
         .form-group {
             display: flex;
             align-items: center;

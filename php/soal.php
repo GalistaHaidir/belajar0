@@ -159,6 +159,54 @@ $urut = 1;
 
     <link rel="stylesheet" href="guru_home.css">
     <title>Kelola Soal</title>
+    <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+            /* Warna hijau tua */
+        }
+
+        /* Efek shadow untuk card */
+        .custom-card {
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header dengan gradient */
+        .custom-header {
+            background: linear-gradient(135deg, #0b1915, #1d4035);
+            font-weight: bold;
+            color: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        /* Efek hover untuk tombol */
+        .btn-custom {
+            border-radius: 50px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+
+        /* Table styling */
+        .table-custom thead {
+            background: #0b1915;
+            color: white;
+        }
+
+        .table-custom tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #e9ecef;
+            transition: 0.3s;
+        }
+    </style>
 </head>
 
 <body>
@@ -173,8 +221,8 @@ $urut = 1;
                     <i class="bi bi-backspace-fill"></i>
                     <span>Kembali</span>
                 </a>
-                <div class="card" style="border-radius: 20px;">
-                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <div class="card custom-card">
+                    <div class="card-header custom-header">
                         Kelola Soal
                     </div>
                     <div class="card-body">
@@ -290,9 +338,9 @@ $urut = 1;
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" name="submit" class="btn btn-primary">
-                                    <i class="bi bi-upload"></i> Simpan
+                            <div class="col-12 text-end">
+                                <button type="submit" name="submit" class="btn btn-primary btn-custom px-3">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
                                 </button>
                             </div>
                         </form>
@@ -300,8 +348,8 @@ $urut = 1;
                 </div>
 
                 <!-- Card: Data Materi -->
-                <div class="card mt-4" style="border-radius: 20px;">
-                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <div class="card custom-card mt-4">
+                    <div class="card-header custom-header">
                         Data Soal
                     </div>
                     <div class="card-body">
@@ -343,14 +391,14 @@ $urut = 1;
                                             <td>
                                                 <!-- Tombol Edit -->
                                                 <a href="soal.php?op=edit&id_soal=<?= $row['id_soal']; ?>">
-                                                    <button type="button" class="btn btn-warning">
-                                                        <i class="bi bi-pen-fill"></i> Edit
+                                                    <button type="button" class="btn btn-warning btn-sm btn-custom">
+                                                        <i class="bi bi-pen-fill"></i>
                                                     </button>
                                                 </a>
                                                 <!-- Tombol Hapus -->
                                                 <a href="soal.php?op=delete&id_soal=<?= $row['id_soal']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                                    <button type="button" class="btn btn-danger">
-                                                        <i class="bi bi-trash-fill"></i> Hapus
+                                                    <button type="button" class="btn btn-danger btn-sm btn-custom">
+                                                        <i class="bi bi-trash-fill"></i>
                                                     </button>
                                                 </a>
                                             </td>

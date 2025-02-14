@@ -23,75 +23,98 @@ if ($result && mysqli_num_rows($result) > 0) {
 }
 
 
+
 $id_tugas = "";
 $judul_tugas = "";
 $deskripsi = "";
 $dateline = "";
 $akses = "";
-$tahap = "";
-$id_proyek = "";
-
+$tahap = NULL;
+$id_proyek = NULL;
 
 $sukses = "";
 $error = "";
 
-#create update
+// Cek jika form disubmit
 if (isset($_POST['submit'])) {
-    $judul_tugas = $_POST['judul_tugas'];
-    $deskripsi = $_POST['deskripsi'];
-    $dateline = $_POST['dateline'];
-    $akses = $_POST['akses'];
-    $tahap = isset($_POST['tahap']) ? $_POST['tahap'] : NULL;
-    $id_proyek = isset($_POST['id_proyek']) && $_POST['id_proyek'] !== "" ? $_POST['id_proyek'] : NULL; // Ambil nilai id_proyek dari form, bisa NULL
+    // Gunakan mysqli_real_escape_string untuk menghindari SQL Injection
+    $judul_tugas = mysqli_real_escape_string($koneksi, $_POST['judul_tugas']);
+    $deskripsi = mysqli_real_escape_string($koneksi, $_POST['deskripsi']);
+    $akses = mysqli_real_escape_string($koneksi, $_POST['akses']);
 
+    // Konversi dateline ke format DATETIME MySQL
+    $dateline = DateTime::createFromFormat('Y-m-d\TH:i', $_POST['dateline']);
+    if ($dateline) {
+        $dateline = $dateline->format('Y-m-d H:i:s'); // Format untuk database
+    } else {
+        $error = "Format tanggal tidak valid!";
+    }
+
+    // Cek apakah `tahap` dan `id_proyek` ada, jika tidak maka NULL
+    $tahap = isset($_POST['tahap']) && $_POST['tahap'] !== "" ? $_POST['tahap'] : NULL;
+    $id_proyek = isset($_POST['id_proyek']) && $_POST['id_proyek'] !== "" ? $_POST['id_proyek'] : NULL;
+
+    // Validasi input
     if ($judul_tugas == "" || $deskripsi == "" || $dateline == "" || $akses == "") {
         $error = "Semua data harus diisi!";
     } else {
         if (isset($_GET['op']) && $_GET['op'] == 'edit') {
+            // Mode Edit
             $id_tugas = $_GET['id_tugas'];
-            $sql = "UPDATE tugas SET judul_tugas = '$judul_tugas', deskripsi = '$deskripsi', dateline = '$dateline', akses = '$akses', tahap = " . ($tahap ? "'$tahap'" : "NULL") . ", id_proyek = " . ($id_proyek ? "'$id_proyek'" : "NULL") . " WHERE id_tugas = '$id_tugas'";
-            $q = mysqli_query($koneksi, $sql);
-            if ($q) {
-                $sukses = "Data berhasil diperbarui!";
-            } else {
-                $error = "Gagal memperbarui data!";
-            }
+            $sql = "UPDATE tugas SET judul_tugas = ?, deskripsi = ?, dateline = ?, akses = ?, tahap = ?, id_proyek = ? WHERE id_tugas = ?";
+            $stmt = mysqli_prepare($koneksi, $sql);
+            mysqli_stmt_bind_param($stmt, "ssssssi", $judul_tugas, $deskripsi, $dateline, $akses, $tahap, $id_proyek, $id_tugas);
         } else {
-            $sql = "INSERT INTO tugas (judul_tugas, deskripsi, dateline, akses, tahap, id_proyek) VALUES ('$judul_tugas', '$deskripsi', '$dateline', '$akses', " . ($tahap ? "'$tahap'" : "NULL") . ", " . ($id_proyek ? "'$id_proyek'" : "NULL") . ")";
-            $q = mysqli_query($koneksi, $sql);
-            if ($q) {
-                $sukses = "Data berhasil ditambahkan!";
-            } else {
-                $error = "Gagal menambahkan data!";
-            }
+            // Mode Insert (Tambah Data)
+            $sql = "INSERT INTO tugas (judul_tugas, deskripsi, dateline, akses, tahap, id_proyek) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($koneksi, $sql);
+            mysqli_stmt_bind_param($stmt, "ssssss", $judul_tugas, $deskripsi, $dateline, $akses, $tahap, $id_proyek);
         }
+
+        // Eksekusi query
+        if (mysqli_stmt_execute($stmt)) {
+            $sukses = (isset($_GET['op']) && $_GET['op'] == 'edit') ? "Data berhasil diperbarui!" : "Data berhasil ditambahkan!";
+        } else {
+            $error = "Gagal menyimpan data! Error: " . mysqli_error($koneksi);
+        }
+
+        // Tutup statement
+        mysqli_stmt_close($stmt);
     }
 }
 
 // DELETE
 if (isset($_GET['op']) && $_GET['op'] == 'delete') {
     $id_tugas = $_GET['id_tugas'];
-    $sql = "DELETE FROM tugas WHERE id_tugas = '$id_tugas'";
-    $q = mysqli_query($koneksi, $sql);
-    if ($q) {
+    $sql = "DELETE FROM tugas WHERE id_tugas = ?";
+    $stmt = mysqli_prepare($koneksi, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id_tugas);
+    if (mysqli_stmt_execute($stmt)) {
         $sukses = "Data berhasil dihapus!";
     } else {
         $error = "Gagal menghapus data!";
     }
+    mysqli_stmt_close($stmt);
 }
 
-#READ (Untuk Edit)
+// READ (Untuk Edit)
 if (isset($_GET['op']) && $_GET['op'] == 'edit') {
     $id_tugas = $_GET['id_tugas'];
-    $sql = "SELECT * FROM tugas WHERE id_tugas = '$id_tugas'";
-    $q = mysqli_query($koneksi, $sql);
-    $r = mysqli_fetch_array($q);
-    $judul_tugas = $r['judul_tugas'];
-    $deskripsi = $r['deskripsi'];
-    $dateline = $r['dateline'];
-    $akses = $r['akses'];
-    $tahap = $r['tahap'];
-    $id_proyek = $r['id_proyek'];
+    $sql = "SELECT * FROM tugas WHERE id_tugas = ?";
+    $stmt = mysqli_prepare($koneksi, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id_tugas);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($r = mysqli_fetch_array($result)) {
+        $judul_tugas = $r['judul_tugas'];
+        $deskripsi = $r['deskripsi'];
+        $dateline = date('Y-m-d\TH:i', strtotime($r['dateline'])); // Konversi agar sesuai input HTML
+        $akses = $r['akses'];
+        $tahap = $r['tahap'];
+        $id_proyek = $r['id_proyek'];
+    }
+    mysqli_stmt_close($stmt);
 } else {
     $judul_tugas = "";
     $deskripsi = "";
@@ -113,12 +136,58 @@ $urut = 1;
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kelola Video</title>
+    <title>Kelola Tugas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="guru_home.css">
+    <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+        }
+
+        .custom-card {
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header dengan gradient */
+        .custom-header {
+            background: linear-gradient(135deg, #0b1915, #1d4035);
+            font-weight: bold;
+            color: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        /* Efek hover untuk tombol */
+        .btn-custom {
+            border-radius: 50px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+
+        /* Table styling */
+        .table-custom thead {
+            background: #0b1915;
+            color: white;
+        }
+
+        .table-custom tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #e9ecef;
+            transition: 0.3s;
+        }
+    </style>
 
 </head>
 
@@ -129,36 +198,57 @@ $urut = 1;
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
                 <a class="btn btn-outline-danger"
-                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    style="border-radius: 50px; margin-bottom: 15px;"
                     onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i>
+                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
                     <span>Kembali</span>
                 </a>
                 <!-- Card: Kelola Materi -->
-                <div class="card" style="border-radius: 20px;">
-                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                        Kelola Nama Kelompok
+                <div class="card custom-card">
+                    <div class="card-header custom-header">
+                        Kelola Tugas
                     </div>
                     <div class="card-body">
+                        <!-- Tampilkan pesan error jika ada -->
                         <?php if (!empty($error)) { ?>
                             <div id="alert-error" class="alert alert-danger col-sm-12">
-                                <ul><?php echo $error; ?></ul>
+                                <p><?php echo htmlspecialchars($error); ?>, Halaman akan direfresh dalam <span id="countdown-error">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "atur_tugas.php";
-                                }, 5000);
+                                let timeLeftError = 5;
+                                let countdownErrorElement = document.getElementById("countdown-error");
+
+                                if (countdownErrorElement) { // Pastikan elemen ada sebelum menjalankan interval
+                                    let timerError = setInterval(function() {
+                                        timeLeftError--;
+                                        countdownErrorElement.innerText = timeLeftError;
+                                        if (timeLeftError <= 0) {
+                                            clearInterval(timerError);
+                                            window.location.href = "atur_tugas.php";
+                                        }
+                                    }, 1000);
+                                }
                             </script>
                         <?php } ?>
 
                         <?php if (!empty($sukses)) { ?>
                             <div id="alert-success" class="alert alert-success col-sm-12">
-                                <ul><?php echo $sukses; ?></ul>
+                                <p><?php echo htmlspecialchars($sukses); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "atur_tugas.php";
-                                }, 5000);
+                                let timeLeftSuccess = 5;
+                                let countdownSuccessElement = document.getElementById("countdown-success");
+
+                                if (countdownSuccessElement) { // Pastikan elemen ada sebelum menjalankan interval
+                                    let timerSuccess = setInterval(function() {
+                                        timeLeftSuccess--;
+                                        countdownSuccessElement.innerText = timeLeftSuccess;
+                                        if (timeLeftSuccess <= 0) {
+                                            clearInterval(timerSuccess);
+                                            window.location.href = "atur_tugas.php";
+                                        }
+                                    }, 1000);
+                                }
                             </script>
                         <?php } ?>
 
@@ -178,7 +268,7 @@ $urut = 1;
                             <div class="mb-3 row">
                                 <label for="dateline" class="col-sm-2 col-form-label">Tenggat Waktu</label>
                                 <div class="col-sm-10">
-                                    <input type="date" class="form-control" placeholder="Tenggat Waktu" name="dateline" value="<?php echo $dateline ?>" id="dateline">
+                                    <input type="datetime-local" class="form-control" placeholder="Tenggat Waktu" name="dateline" value="<?php echo $dateline ?>" id="dateline">
                                 </div>
                             </div>
                             <div class="mb-3 row">
@@ -213,9 +303,9 @@ $urut = 1;
                                     <input type="int" class="form-control" placeholder="Id Proyek" name="id_proyek" value="<?php echo $id_proyek ?>" id="id_proyek">
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" name="submit" class="btn btn-primary">
-                                    <i class="bi bi-upload"></i> Simpan
+                            <div class="col-12 text-end">
+                                <button type="submit" name="submit" class="btn btn-primary btn-custom px-3">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
                                 </button>
                             </div>
                         </form>
@@ -223,8 +313,8 @@ $urut = 1;
                 </div>
 
                 <!-- Card: Data Materi -->
-                <div class="card mt-4" style="border-radius: 20px;">
-                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <div class="card custom-card mt-4">
+                    <div class="card-header custom-header">
                         Data Tugas
                     </div>
                     <div class="card-body">
@@ -256,14 +346,14 @@ $urut = 1;
                                             <td>
                                                 <!-- Tombol Edit -->
                                                 <a href="atur_tugas.php?op=edit&id_tugas=<?= $row['id_tugas']; ?>">
-                                                    <button type="button" class="btn btn-warning">
-                                                        <i class="bi bi-pen-fill"></i> Edit
+                                                    <button type="button" class="btn btn-warning btn-sm btn-custom">
+                                                        <i class="bi bi-pen-fill"></i>
                                                     </button>
                                                 </a>
                                                 <!-- Tombol Hapus -->
                                                 <a href="atur_tugas.php?op=delete&id_tugas=<?= $row['id_tugas']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
-                                                    <button type="button" class="btn btn-danger">
-                                                        <i class="bi bi-trash-fill"></i> Hapus
+                                                    <button type="button" class="btn btn-danger btn-sm btn-custom">
+                                                        <i class="bi bi-trash-fill"></i>
                                                     </button>
                                                 </a>
                                             </td>

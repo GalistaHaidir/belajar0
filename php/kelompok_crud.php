@@ -88,12 +88,60 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kelola Video</title>
+    <title>Kelola Nama Kelompok</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="guru_home.css">
+    <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+            /* Warna hijau tua */
+        }
+
+        /* Efek shadow untuk card */
+        .custom-card {
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header dengan gradient */
+        .custom-header {
+            background: linear-gradient(135deg, #0b1915, #1d4035);
+            font-weight: bold;
+            color: white;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        /* Efek hover untuk tombol */
+        .btn-custom {
+            border-radius: 50px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
+
+        /* Table styling */
+        .table-custom thead {
+            background: #0b1915;
+            color: white;
+        }
+
+        .table-custom tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #e9ecef;
+            transition: 0.3s;
+        }
+    </style>
 
 </head>
 
@@ -103,37 +151,60 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
+                <!-- Tombol Kembali -->
                 <a class="btn btn-outline-danger"
-                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    style="border-radius: 50px; margin-bottom: 15px;"
                     onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i>
+                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
                     <span>Kembali</span>
                 </a>
-                <!-- Card: Kelola Materi -->
-                <div class="card" style="border-radius: 20px;">
-                    <div class="card-header text-light" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+
+                <!-- Card: Kelola Nama Kelompok -->
+                <div class="card custom-card">
+                    <div class="card-header custom-header">
                         Kelola Nama Kelompok
                     </div>
                     <div class="card-body">
+                        <!-- Tampilkan pesan error jika ada -->
                         <?php if (!empty($error)) { ?>
                             <div id="alert-error" class="alert alert-danger col-sm-12">
-                                <ul><?php echo $error; ?></ul>
+                                <p><?php echo htmlspecialchars($error); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelompok_crud.php";
-                                }, 5000);
+                                let timeLeftError = 5;
+                                let countdownErrorElement = document.getElementById("countdown-error");
+
+                                let timerError = setInterval(function() {
+                                    if (countdownErrorElement) {
+                                        timeLeftError--;
+                                        countdownErrorElement.innerText = timeLeftError;
+                                        if (timeLeftError <= 0) {
+                                            clearInterval(timerError);
+                                            window.location.href = "kelompok_crud.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
 
                         <?php if (!empty($sukses)) { ?>
                             <div id="alert-success" class="alert alert-success col-sm-12">
-                                <ul><?php echo $sukses; ?></ul>
+                                <p><?php echo htmlspecialchars($sukses); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
                             </div>
                             <script>
-                                setTimeout(function() {
-                                    window.location.href = "kelompok_crud.php";
-                                }, 5000);
+                                let timeLeftSuccess = 5;
+                                let countdownSuccessElement = document.getElementById("countdown-success");
+
+                                let timerSuccess = setInterval(function() {
+                                    if (countdownSuccessElement) {
+                                        timeLeftSuccess--;
+                                        countdownSuccessElement.innerText = timeLeftSuccess;
+                                        if (timeLeftSuccess <= 0) {
+                                            clearInterval(timerSuccess);
+                                            window.location.href = "kelompok_crud.php";
+                                        }
+                                    }
+                                }, 1000);
                             </script>
                         <?php } ?>
 
@@ -144,24 +215,23 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
                                     <input type="text" class="form-control" placeholder="Nama Kelompok" name="nama_kelompok" value="<?php echo $nama_kelompok ?>" id="nama_kelompok">
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" name="submit" class="btn btn-primary">
-                                    <i class="bi bi-upload"></i> Simpan
+                            <div class="col-12 text-end">
+                                <button type="submit" name="submit" class="btn btn-primary btn-custom px-3">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- Card: Data Materi -->
-                <div class="card mt-4" style="border-radius: 20px;">
-                    <div class="card-header text-white" style="background-color: #0b1915; font-weight: bold; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                        Data Tugas
+                <!-- Card: Data Kelompok -->
+                <div class="card custom-card mt-4">
+                    <div class="card-header custom-header">
+                        Data Kelompok
                     </div>
                     <div class="card-body">
-                        <!-- Add a wrapper div for the table -->
                         <div style="max-height: 350px; overflow-y: auto;">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-custom">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -176,17 +246,21 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
                                     $urut = 1;
                                     while ($r2 = mysqli_fetch_array($q2)) {
                                         $id_kelompok    = $r2['id_kelompok'];
-                                        $nama_kelompok        = $r2['nama_kelompok'];
+                                        $nama_kelompok  = $r2['nama_kelompok'];
                                     ?>
                                         <tr>
                                             <th scope="row"><?php echo $urut++ ?></th>
                                             <td><?php echo $nama_kelompok ?></td>
                                             <td>
                                                 <a href="kelompok_crud.php?op=edit&id_kelompok=<?php echo $id_kelompok ?>">
-                                                    <button type="button" class="btn btn-warning"><i class="bi bi-pen-fill"></i></button>
+                                                    <button type="button" class="btn btn-warning btn-sm btn-custom">
+                                                        <i class="bi bi-pen-fill"></i>
+                                                    </button>
                                                 </a>
                                                 <a href="kelompok_crud.php?op=delete&id_kelompok=<?php echo $id_kelompok ?>" onclick="return confirm('Yakin ingin menghapus kelompok ini?')">
-                                                    <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                                                    <button type="button" class="btn btn-danger btn-sm btn-custom">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
                                                 </a>
                                             </td>
                                         </tr>
@@ -196,9 +270,7 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
                         </div>
                     </div>
                 </div>
-
             </main>
-
 
             <?php include 'footer.php'; ?>
         </div>

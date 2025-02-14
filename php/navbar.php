@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand px-4 py-3">
-    <h3 class="fw-bold" style="text-transform: capitalize;">Hi, <?= $sessionUsername; ?></h3>
+    <h3 class="fw-bold" style="text-transform: capitalize;  font-family: 'Playfair Display', sans-serif;">Hi, <?= $sessionUsername; ?></h3>
     <div class="navbar-collapse collapse">
         <ul class="navbar-nav ms-auto">
             <li class="nav-item dropdown">

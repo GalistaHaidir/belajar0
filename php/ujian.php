@@ -94,6 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <link rel="stylesheet" href="guru_home.css">
     <title>Mengerjakan Soal</title>
     <style>
+        /* Styling body */
+        .content {
+            background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
+            color: #1B5E20;
+            /* Warna hijau tua */
+        }
+
         .card-soal {
             border-left: 5px solid #007bff;
             /* Garis warna biru di sebelah kiri soal */
