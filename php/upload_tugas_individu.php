@@ -39,7 +39,7 @@ if ($result_check->num_rows > 0) {
 
 // Proses Upload File
 if ($_FILES['file_tugas']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = "uploads/"; // Direktori penyimpanan file tugas
+    $upload_dir = "pengumpulan_tugas_individu/"; // Direktori penyimpanan file tugas
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }

@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file_tugas'])) {
     $id_tugas = $_POST['id_tugas'];
 
     // Folder penyimpanan
-    $upload_dir = "uploads/";
+    $upload_dir = "pengumpulan_tugas_kelompok/";
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }

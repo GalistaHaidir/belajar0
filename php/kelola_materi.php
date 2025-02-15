@@ -86,13 +86,13 @@ if (isset($_POST['submit'])) {
 
     // Cek apakah ada file PDF yang diupload
     if (isset($_FILES['pdf_file']) && $_FILES['pdf_file']['error'] == 0) {
-        $file_path = 'pdf/' . basename($_FILES['pdf_file']['name']);
+        $file_path = 'materi/dokumen' . basename($_FILES['pdf_file']['name']);
         move_uploaded_file($_FILES['pdf_file']['tmp_name'], $file_path);
     }
 
     // Cek apakah ada video yang diupload
     if (isset($_FILES['video_file']) && $_FILES['video_file']['error'] == 0) {
-        $video_path = 'videos/' . basename($_FILES['video_file']['name']);
+        $video_path = 'materi/video' . basename($_FILES['video_file']['name']);
         move_uploaded_file($_FILES['video_file']['tmp_name'], $video_path);
     }
 
