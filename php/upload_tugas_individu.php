@@ -1,29 +1,22 @@
 <?php
-
 session_start();
-
-include 'koneksi.php'; // Koneksi ke database
+include 'koneksi.php';
 
 if (!isset($_SESSION['session_username'])) {
     header("location:login.php");
+    exit;
 }
 
 $id_pengguna = $_SESSION['id_pengguna'];
 $id_tugas = $_POST['id_tugas'] ?? null;
+$file_tugas = null;
 
-// Cek apakah ID tugas valid
+// Ambil kode dari form (jika ada)
+$html_code = $_POST['html_code'] ?? null;
+$css_code = $_POST['css_code'] ?? null;
+$js_code = $_POST['js_code'] ?? null;
+
 if (!$id_tugas) {
-    die("Tugas tidak ditemukan!");
-}
-
-// Ambil informasi tugas
-$query_tugas = $koneksi->prepare("SELECT * FROM tugas WHERE id_tugas = ?");
-$query_tugas->bind_param("i", $id_tugas);
-$query_tugas->execute();
-$result_tugas = $query_tugas->get_result();
-$tugas = $result_tugas->fetch_assoc();
-
-if (!$tugas) {
     die("Tugas tidak ditemukan!");
 }
 
@@ -37,9 +30,9 @@ if ($result_check->num_rows > 0) {
     die("Anda sudah mengumpulkan tugas ini!");
 }
 
-// Proses Upload File
-if ($_FILES['file_tugas']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = "pengumpulan_tugas_individu/"; // Direktori penyimpanan file tugas
+// Jika pengguna mengunggah file
+if (isset($_FILES['file_tugas']) && $_FILES['file_tugas']['error'] === UPLOAD_ERR_OK) {
+    $upload_dir = "pengumpulan_tugas_individu/";
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
@@ -50,49 +43,22 @@ if ($_FILES['file_tugas']['error'] === UPLOAD_ERR_OK) {
     $file_name_new = "tugas_" . $id_pengguna . "_" . time() . "." . $file_ext;
     $file_path = $upload_dir . $file_name_new;
 
-    // Validasi ekstensi file
     $allowed_extensions = ['pdf', 'doc', 'docx', 'zip', 'rar'];
     if (!in_array(strtolower($file_ext), $allowed_extensions)) {
-        echo "<script>
-            alert('Format file tidak diizinkan! Hanya boleh PDF, DOC, DOCX, ZIP, atau RAR.');
-            window.history.back();
-        </script>";
-        exit;
+        die("Format file tidak diizinkan!");
     }
 
-    // Pindahkan file ke folder tujuan
-    if (move_uploaded_file($file_tmp, $file_path)) {
-        // Simpan informasi pengumpulan ke database
-        $query_insert = $koneksi->prepare("
-            INSERT INTO pengumpulan_tugas (id_tugas, id_pengguna, file_tugas, tanggal_upload)
-            VALUES (?, ?, ?, NOW())
-        ");
-        $query_insert->bind_param("iis", $id_tugas, $id_pengguna, $file_path);
-
-        if ($query_insert->execute()) {
-            echo "<script>
-                alert('Tugas berhasil dikumpulkan!');
-                window.location.href = 'detailtugas_individu.php?id_tugas=$id_tugas';
-            </script>";
-            exit;
-        } else {
-            echo "<script>
-                alert('Gagal menyimpan tugas ke database.');
-                window.history.back();
-            </script>";
-            exit;
-        }
-    } else {
-        echo "<script>
-            alert('Gagal mengunggah file.');
-            window.history.back();
-        </script>";
-        exit;
-    }
-} else {
-    echo "<script>
-        alert('Terjadi kesalahan saat mengunggah file.');
-        window.history.back();
-    </script>";
-    exit;
+    move_uploaded_file($file_tmp, $file_path);
+    $file_tugas = $file_path;
 }
+
+// Simpan ke database
+$query = $koneksi->prepare("
+    INSERT INTO pengumpulan_tugas (id_tugas, id_pengguna, file_tugas, html_code, css_code, js_code, tanggal_upload) 
+    VALUES (?, ?, ?, ?, ?, ?, NOW())
+");
+$query->bind_param("iissss", $id_tugas, $id_pengguna, $file_tugas, $html_code, $css_code, $js_code);
+$query->execute();
+
+echo "<script>alert('Tugas berhasil dikumpulkan!'); window.location.href='detailtugas_individu.php?id_tugas=$id_tugas';</script>";
+?>

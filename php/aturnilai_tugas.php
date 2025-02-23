@@ -39,7 +39,7 @@ $error = "";
 if (isset($_POST['submit'])) {
     $id_tugas = mysqli_real_escape_string($koneksi, $_POST['id_tugas']);
     $id_kelompok = isset($_POST['id_kelompok']) && $_POST['id_kelompok'] !== '' ? (int) $_POST['id_kelompok'] : NULL;
-    $tanggal_upload = mysqli_real_escape_string($koneksi, $_POST['tanggal_upload']);
+    $tanggal_upload = isset($_POST['tanggal_upload']) && $_POST['tanggal_upload'] !== '' ? (int) $_POST['tanggal_upload'] : NULL;
     $nilai = isset($_POST['nilai']) ? mysqli_real_escape_string($koneksi, $_POST['nilai']) : NULL;
     $catatan_guru = isset($_POST['catatan_guru']) ? mysqli_real_escape_string($koneksi, $_POST['catatan_guru']) : NULL;
     $id_pengguna = $_SESSION['id_pengguna'];
@@ -63,7 +63,7 @@ if (isset($_POST['submit'])) {
             WHERE id_pengumpulan = '$id_pengumpulan'";
     } else {
         $sql = "INSERT INTO pengumpulan_tugas (id_tugas, id_kelompok, file_tugas, tanggal_upload, id_pengguna, nilai, catatan_guru) 
-                VALUES ('$id_tugas', '$id_kelompok', '$file_tugas', '$tanggal_upload', '$id_pengguna', " . ($nilai ? "'$nilai'" : "NULL") . ", " . ($catatan_guru ? "'$catatan_guru'" : "NULL") . ")";
+                VALUES ('$id_tugas', '$id_kelompok', '$file_tugas', '$id_pengguna', " . ($nilai ? "'$nilai'" : "NULL") . ", " . ($catatan_guru ? "'$catatan_guru'" : "NULL") . "," . ($tanggal_upload ? "'$tanggal_upload'" : "NULL") . ")";
     }
 
     if (mysqli_query($koneksi, $sql)) {
@@ -326,6 +326,9 @@ $urut = 1;
                                         <th scope="col">File Tugas</th>
                                         <th scope="col">Tanggal Pengumpulan</th>
                                         <th scope="col">Nama Pengguna</th>
+                                        <th scope="col">HTML</th>
+                                        <th scope="col">CSS</th>
+                                        <th scope="col">JS</th>
                                         <th scope="col">Nilai</th>
                                         <th scope="col">Catatan Guru</th>
                                         <th scope="col">Aksi</th>
@@ -334,24 +337,27 @@ $urut = 1;
                                 <tbody>
                                     <?php
                                     $sql2 = "SELECT p.id_pengumpulan, t.judul_tugas, k.nama_kelompok, p.file_tugas, 
-                                    p.tanggal_upload, u.namaLengkap, p.nilai, p.catatan_guru
-                             FROM pengumpulan_tugas p
-                             LEFT JOIN tugas t ON p.id_tugas = t.id_tugas
-                             LEFT JOIN kelompok k ON p.id_kelompok = k.id_kelompok
-                             LEFT JOIN pengguna u ON p.id_pengguna = u.id_pengguna
-                             ORDER BY p.id_pengumpulan DESC";
+                        p.tanggal_upload, u.namaLengkap, p.html_code, p.css_code, p.js_code, 
+                        p.nilai, p.catatan_guru
+                 FROM pengumpulan_tugas p
+                 LEFT JOIN tugas t ON p.id_tugas = t.id_tugas
+                 LEFT JOIN kelompok k ON p.id_kelompok = k.id_kelompok
+                 LEFT JOIN pengguna u ON p.id_pengguna = u.id_pengguna
+                 ORDER BY p.id_pengumpulan DESC";
 
                                     $q2 = mysqli_query($koneksi, $sql2);
                                     $urut = 1;
 
                                     while ($r2 = mysqli_fetch_array($q2)) {
-                                        $id_pengumpulan          = (int)$r2['id_pengumpulan'];
-
-                                        $judul_tugas     = htmlspecialchars($r2['judul_tugas']);
+                                        $id_pengumpulan = (int)$r2['id_pengumpulan'];
+                                        $judul_tugas    = htmlspecialchars($r2['judul_tugas']);
                                         $nama_kelompok  = htmlspecialchars($r2['nama_kelompok']);
                                         $file_tugas     = $r2['file_tugas'];
                                         $tanggal_upload = htmlspecialchars($r2['tanggal_upload']);
                                         $nama_pengguna  = htmlspecialchars($r2['namaLengkap']);
+                                        $html_code      = htmlspecialchars($r2['html_code']);
+                                        $css_code       = htmlspecialchars($r2['css_code']);
+                                        $js_code        = htmlspecialchars($r2['js_code']);
                                         $nilai          = (int)$r2['nilai'];
                                         $catatan_guru   = htmlspecialchars($r2['catatan_guru']);
                                     ?>
@@ -370,6 +376,33 @@ $urut = 1;
                                             </td>
                                             <td><?php echo $tanggal_upload; ?></td>
                                             <td><?php echo $nama_pengguna; ?></td>
+                                            <td>
+                                                <?php if (!empty($html_code)): ?>
+                                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalHtml<?php echo $id_pengumpulan; ?>">
+                                                        Lihat HTML
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="text-danger">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($css_code)): ?>
+                                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalCss<?php echo $id_pengumpulan; ?>">
+                                                        Lihat CSS
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="text-danger">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($js_code)): ?>
+                                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalJs<?php echo $id_pengumpulan; ?>">
+                                                        Lihat JS
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="text-danger">-</span>
+                                                <?php endif; ?>
+                                            </td>
                                             <td><?php echo $nilai; ?></td>
                                             <td><?php echo $catatan_guru; ?></td>
                                             <td>
@@ -385,10 +418,56 @@ $urut = 1;
                                                 </a>
                                             </td>
                                         </tr>
-                                    <?php } ?>
 
+                                        <!-- Modal HTML -->
+                                        <div class="modal fade" id="modalHtml<?php echo $id_pengumpulan; ?>" tabindex="-1" aria-labelledby="modalHtmlLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Kode HTML</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <pre><?php echo $html_code; ?></pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal CSS -->
+                                        <div class="modal fade" id="modalCss<?php echo $id_pengumpulan; ?>" tabindex="-1" aria-labelledby="modalCssLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Kode CSS</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <pre><?php echo $css_code; ?></pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal JS -->
+                                        <div class="modal fade" id="modalJs<?php echo $id_pengumpulan; ?>" tabindex="-1" aria-labelledby="modalJsLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Kode JavaScript</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <pre><?php echo $js_code; ?></pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    <?php } ?>
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
