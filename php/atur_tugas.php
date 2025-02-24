@@ -199,7 +199,7 @@ $urut = 1;
             <main class="content px-3 py-4">
                 <a class="btn btn-outline-danger"
                     style="border-radius: 50px; margin-bottom: 15px;"
-                    onclick="navigateToPage()">
+                    onclick="window.location.href='kelola_tugas.php';">
                     <i class="bi bi-arrow-left-circle-fill me-2"></i>
                     <span>Kembali</span>
                 </a>
@@ -371,12 +371,6 @@ $urut = 1;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="guru_home.js"></script>
-
-    <script>
-        function navigateToPage() {
-            window.history.back();
-        }
-    </script>
 
 </body>
 

@@ -50,7 +50,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Materi</title>
+    <title><?php echo $title; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -73,9 +73,9 @@ if ($result && mysqli_num_rows($result) > 0) {
 
             <main class="content px-3 py-4">
                 <a class="btn btn-outline-danger"
-                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
+                    style="border-radius: 50px; margin-bottom: 15px;"
                     onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i>
+                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
                     <span>Kembali</span>
                 </a>
                 <div class="container-fluid ms-3 me-3">

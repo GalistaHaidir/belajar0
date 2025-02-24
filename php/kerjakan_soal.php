@@ -40,7 +40,7 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="guru_home.css">
-    <title>Mengerjakan Soal</title>
+    <title>Pilih Soal</title>
     <style>
         /* Styling body */
         .content {
@@ -57,14 +57,8 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <a class="btn btn-outline-danger"
-                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
-                    onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i>
-                    <span>Kembali</span>
-                </a>
-                <div class="container">
-                    <h1>Pilih Ujian</h1>
+                <div class="container mt-4">
+                    <h1>Pilih Soal</h1>
                     <div class="row">
                         <?php
                         $id_pengguna = $_SESSION['id_pengguna']; // Ambil ID siswa yang sedang login
@@ -93,15 +87,15 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
                             <div class="col-md-4 mb-4">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title">Nama Ujian: <?= $row['nama_ujian']; ?></h5>
-                                        <p class="card-text">Waktu Ujian: <?= $row['waktu']; ?> menit</p>
+                                        <h5 class="card-title">Nama Soal: <?= $row['nama_ujian']; ?></h5>
+                                        <p class="card-text">Waktu Pengerjaan: <?= $row['waktu']; ?> menit</p>
 
                                         <?php if ($sudah_ujian) { ?>
                                             <p class="card-text">Nilai Anda: <strong><?= $nilai; ?></strong></p>
                                         <?php } ?>
 
                                         <?php if (!$sudah_ujian) { ?>
-                                            <a href="ujian.php?id_peraturan=<?= $row['id_peraturan']; ?>" class="btn btn-primary">Mulai Ujian</a>
+                                            <a href="ujian.php?id_peraturan=<?= $row['id_peraturan']; ?>" class="btn btn-primary">Mulai Kerjakan</a>
                                         <?php } elseif ($status_lower == 'tidak lulus') { ?>
                                             <a href="ujian.php?id_peraturan=<?= $row['id_peraturan']; ?>" class="btn btn-warning">Coba Lagi</a>
                                         <?php } else { ?>

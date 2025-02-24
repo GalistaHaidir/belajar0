@@ -84,16 +84,31 @@
         </li>
         <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
             <li class="sidebar-item">
-                <a href="kelola_akunsiswa.php" class="sidebar-link">
-                    <i class="bi bi-person-arms-up" style="color:rgb(164, 114, 255);"></i>
-                    <span>Siswa</span>
+                <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#auth9" aria-expanded="false" aria-controls="auth9">
+                    <i class="bi bi-person-fill" style="color:rgb(164, 114, 255);"></i>
+                    <span>Akun</span>
                 </a>
-            <?php } ?>
+                <ul id="auth9" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
+                        <li class="sidebar-item">
+                            <a href="kelola_akunsiswa.php" class="sidebar-link">
+                                Kelola Akun
+                            </a>
+                        </li>
+                    <?php } ?>
+                    <li class="sidebar-item">
+                        <a href="kelola_aksesguru.php" class="sidebar-link">
+                            Kelola Akses Guru
+                        </a>
+                    </li>
+                </ul>
             </li>
+        <?php } ?>
     </ul>
     <div class="sidebar-footer mb-1">
         <a href="logout.php" class="sidebar-link">
-            <i class="bi bi-door-open-fill"style="color:rgb(255, 0, 0);"></i>
+            <i class="bi bi-door-open-fill" style="color:rgb(255, 0, 0);"></i>
             <span>Keluar</span>
         </a>
     </div>

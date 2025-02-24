@@ -170,14 +170,8 @@ if (isset($_POST['submit'])) { // create
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <a class="btn btn-outline-danger"
-                    style="border-radius: 50px; margin-bottom: 15px;"
-                    onclick="navigateToPage()">
-                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
-                    <span>Kembali</span>
-                </a>
                 <!-- Card: Kelola Nama Kelompok -->
-                <div class="card custom-card">
+                <div class="card custom-card mt-4">
                     <div class="card-header custom-header">
                         Kelola Akun
                     </div>
@@ -329,11 +323,6 @@ if (isset($_POST['submit'])) { // create
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <script>
-        function navigateToPage() {
-            window.history.back();
-        }
-    </script>
 </body>
 
 </html>

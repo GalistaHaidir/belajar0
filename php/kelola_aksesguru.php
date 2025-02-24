@@ -1,11 +1,10 @@
 <?php
 session_start();
-include 'koneksi.php';
 
-// Periksa apakah pengguna sudah login
-if (!isset($_SESSION['id_pengguna'])) {
-    header("Location: login.php"); // Redirect ke halaman login jika belum login
-    exit;
+include 'koneksi.php'; // Koneksi ke database
+
+if (!isset($_SESSION['session_username'])) {
+    header("location:login.php");
 }
 
 $sessionUsername = $_SESSION['admin_username'];
@@ -23,123 +22,95 @@ if ($result && mysqli_num_rows($result) > 0) {
     $fotoProfil = "default.jpg";
 }
 
-// Inisialisasi variabel
-$id_nilai = "";
+
 $id_pengguna = "";
-$benar = "";
-$salah = "";
-$kosong = "";
-$nilai = "";
-$tanggal = "";
-$status = "";
+$id_master = "";
 
 $sukses = "";
 $error = "";
 
-// Cek apakah ada operasi yang diminta (edit atau delete)
-if (isset($_GET['op'])) {
-    $op = $_GET['op'];
-} else {
-    $op = "";
-}
 
-// Handle Delete
-if ($op == 'delete') {
-    $id_nilai = $_GET['id_nilai'];
-    $sql = "DELETE FROM tbl_nilai WHERE id_nilai = '$id_nilai'";
-    $q = mysqli_query($koneksi, $sql);
-    if ($q) {
-        $sukses = "Berhasil menghapus data.";
-    } else {
-        $error = "Gagal menghapus data.";
-    }
-}
-
-// Handle Edit
-if ($op == 'edit') {
-    $id_nilai = $_GET['id_nilai'];
-    $sql = "SELECT * FROM tbl_nilai WHERE id_nilai = '$id_nilai'";
-    $q = mysqli_query($koneksi, $sql);
-    $r = mysqli_fetch_array($q);
-    $id_pengguna = $r['id_pengguna'];
-    $benar = $r['benar'];
-    $salah = $r['salah'];
-    $kosong = $r['kosong'];
-    $nilai = $r['nilai'];
-    $tanggal = $r['tanggal'];
-    $status = $r['status'];
-
-    if ($id_pengguna == '') {
-        $error = "Data tidak ditemukan.";
-    }
-}
-
-// Handle Create atau Update
+// CREATE dan UPDATE
 if (isset($_POST['submit'])) {
+    $id_master = $_POST['id_master'];
     $id_pengguna = $_POST['id_pengguna'];
-    $benar = $_POST['benar'];
-    $salah = $_POST['salah'];
-    $kosong = $_POST['kosong'];
-    $nilai = $_POST['nilai'];
-    $tanggal = $_POST['tanggal'];
-    $status = $_POST['status'];
 
-    // Validasi input
-    if ($id_pengguna && $benar && $salah && $kosong && $nilai && $tanggal && $status) {
-        if ($op == 'edit') { // Update
-            $sql = "UPDATE tbl_nilai SET id_pengguna = '$id_pengguna', benar = '$benar', salah = '$salah', kosong = '$kosong', nilai = '$nilai', tanggal = '$tanggal', status = '$status' WHERE id_nilai = '$id_nilai'";
+    if ($id_master == "" || $id_pengguna == "") {
+        $error = "Semua data harus diisi!";
+    } else {
+        if (isset($_GET['op']) && $_GET['op'] == 'edit') {
+            $id_akses = $_GET['id_akses'];
+            $sql = "UPDATE akses SET id_master = '$id_master', id_pengguna = '$id_pengguna' WHERE id_akses = '$id_akses'";
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
-                $sukses = "Data berhasil diperbarui.";
+                $sukses = "Data berhasil diperbarui!";
             } else {
-                $error = "Data gagal diperbarui.";
+                $error = "Gagal memperbarui data!";
             }
-        } else { // Insert
-            $sql = "INSERT INTO tbl_nilai (id_pengguna, benar, salah, kosong, nilai, tanggal, status) VALUES ('$id_pengguna', '$benar', '$salah', '$kosong', '$nilai', '$tanggal', '$status')";
+        } else {
+            $sql = "INSERT INTO akses (id_master, id_pengguna) VALUES ('$id_master', '$id_pengguna')";
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
-                $sukses = "Berhasil menambahkan data baru.";
+                $sukses = "Data berhasil ditambahkan!";
             } else {
-                $error = "Gagal menambahkan data baru.";
+                $error = "Gagal menambahkan data!";
             }
         }
-    } else {
-        $error = "Silakan isi semua data.";
     }
 }
 
-// Fetch Data with JOIN to include namaLengkap
-$query = "SELECT tbl_nilai.*, pengguna.namaLengkap FROM tbl_nilai JOIN pengguna ON tbl_nilai.id_pengguna = pengguna.id_pengguna";
-$result = $koneksi->query($query);
-
-// Check if the query was successful
-if (!$result) {
-    die("Query Error: " . $koneksi->error);
+// DELETE
+if (isset($_GET['op']) && $_GET['op'] == 'delete') {
+    $id_akses = $_GET['id_akses'];
+    $sql = "DELETE FROM akses WHERE id_akses = '$id_akses'";
+    $q = mysqli_query($koneksi, $sql);
+    if ($q) {
+        $sukses = "Data berhasil dihapus!";
+    } else {
+        $error = "Gagal menghapus data!";
+    }
 }
 
-// Display Data
+// READ (Untuk Edit)
+if (isset($_GET['op']) && $_GET['op'] == 'edit') {
+    $id_akses = $_GET['id_akses'];
+    $sql = "SELECT * FROM akses WHERE id_akses = '$id_akses'";
+    $q = mysqli_query($koneksi, $sql);
+    $r = mysqli_fetch_array($q);
+
+    $id_master = $r['id_master'];
+    $id_pengguna = $r['id_pengguna'];
+} else {
+    $id_master = "";
+    $id_pengguna = "";
+}
+
+$sql = "SELECT ak.id_akses, p.namaLengkap, ak.id_master 
+FROM akses ak
+JOIN pengguna p ON ak.id_pengguna = p.id_pengguna
+ORDER BY ak.id_akses DESC;
+";
+$result = $koneksi->query($sql);
 $urut = 1;
 ?>
 
-
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kelola Akses Kelompok</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="guru_home.css">
-    <title>Kelola Nilai Soal</title>
     <style>
         /* Styling body */
         .content {
             background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
             color: #1B5E20;
-            /* Warna hijau tua */
         }
 
         /* Efek shadow untuk card */
@@ -182,6 +153,7 @@ $urut = 1;
             transition: 0.3s;
         }
     </style>
+
 </head>
 
 <body>
@@ -190,19 +162,12 @@ $urut = 1;
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <a class="btn btn-outline-danger"
-                    style="border-radius: 50px; margin-bottom: 15px;"
-                    onclick="window.location.href='kelola_soal.php';">
-                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
-                    <span>Kembali</span>
-                </a>
                 <!-- Card: Kelola Materi -->
-                <div class="card custom-card">
+                <div class="card custom-card mt-4">
                     <div class="card-header custom-header">
-                        Kelola Nilai Soal
+                        Kelola Nama Kelompok
                     </div>
                     <div class="card-body">
-                        <!-- Tampilkan pesan error jika ada -->
                         <?php if (!empty($error)) { ?>
                             <div id="alert-error" class="alert alert-danger col-sm-12">
                                 <p><?php echo htmlspecialchars($error); ?>, Halaman akan direfresh dalam <span id="countdown-success">5</span> detik...</p>
@@ -217,7 +182,7 @@ $urut = 1;
                                         countdownErrorElement.innerText = timeLeftError;
                                         if (timeLeftError <= 0) {
                                             clearInterval(timerError);
-                                            window.location.href = "nilai.php";
+                                            window.location.href = "kelola_aksesguru.php";
                                         }
                                     }
                                 }, 1000);
@@ -238,61 +203,44 @@ $urut = 1;
                                         countdownSuccessElement.innerText = timeLeftSuccess;
                                         if (timeLeftSuccess <= 0) {
                                             clearInterval(timerSuccess);
-                                            window.location.href = "nilai.php";
+                                            window.location.href = "kelola_aksesguru.php";
                                         }
                                     }
                                 }, 1000);
                             </script>
                         <?php } ?>
-                        <!-- Form untuk menambah atau mengedit data -->
-                        <form action="" method="POST">
+
+                        <form action="" method="POST" enctype="multipart/form-data">
                             <div class="mb-3 row">
-                                <label for="namaLengkap" class="col-sm-2 col-form-label">Nama Pengguna</label>
+                                <label for="id_master" class="col-sm-2 col-form-label">Nama Peran</label>
                                 <div class="col-sm-10">
-                                    <select class="form-control" name="id_pengguna" id="namaLengkap" required>
-                                        <option value="" disabled selected>-- Pilih Nama Pengguna --</option>
+                                    <select class="form-control" name="id_master" id="id_master" required>
+                                        <option value="" disabled selected>-- Pilih Nama Kelompok --</option>
                                         <?php
-                                        // Ambil data namaLengkap dari tabel pengguna
-                                        $result_pengguna = $koneksi->query("SELECT id_pengguna, namaLengkap FROM pengguna");
-                                        while ($row_pengguna = $result_pengguna->fetch_assoc()) {
-                                            echo "<option value='" . $row_pengguna['id_pengguna'] . "'>" . $row_pengguna['namaLengkap'] . "</option>";
+                                        $result_akses = $koneksi->query("SELECT id_master FROM akses");
+                                        while ($row_akses = $result_akses->fetch_assoc()) {
+                                            $selected = ($row_akses['id_master'] == $id_master) ? "selected" : "";
+                                            echo "<option value='" . $row_akses['id_master'] . "' $selected>" . $row_akses['id_master'] . "</option>";
                                         }
                                         ?>
                                     </select>
                                 </div>
                             </div>
-
                             <div class="mb-3 row">
-                                <label for="benar" class="col-sm-2 col-form-label">Jumlah Jawaban Benar</label>
+                                <label for="namaLengkap" class="col-sm-2 col-form-label">Nama Siswa</label>
                                 <div class="col-sm-10">
-                                    <input type="number" class="form-control" placeholder="Jumlah Jawaban Benar" name="benar" id="benar" value="<?php echo isset($benar) ? (int) $benar : ''; ?>" required>
+                                    <select class="form-control" name="id_pengguna" id="namaLengkap" required>
+                                        <option value="" disabled selected>-- Pilih Nama Siswa --</option>
+                                        <?php
+                                        $result_siswa = $koneksi->query("SELECT id_pengguna, namaLengkap FROM pengguna");
+                                        while ($row_siswa = $result_siswa->fetch_assoc()) {
+                                            $selected = ($row_siswa['id_pengguna'] == $id_pengguna) ? "selected" : "";
+                                            echo "<option value='" . $row_siswa['id_pengguna'] . "' $selected>" . $row_siswa['namaLengkap'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="mb-3 row">
-                                <label for="salah" class="col-sm-2 col-form-label">Jumlah Jawaban Salah</label>
-                                <div class="col-sm-10">
-                                    <input type="number" class="form-control" placeholder="Jumlah Jawaban Salah" name="salah" id="salah" value="<?php echo isset($salah) ? (int) $salah : ''; ?>" required>
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="kosong" class="col-sm-2 col-form-label">Jumlah Jawaban Kosong</label>
-                                <div class="col-sm-10">
-                                    <input type="number" class="form-control" placeholder="Jumlah Jawaban Kosong" name="kosong" id="kosong" value="<?php echo isset($kosong) ? (int) $kosong : ''; ?>" required>
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="nilai" class="col-sm-2 col-form-label">Nilai</label>
-                                <div class="col-sm-10">
-                                    <input type="number" class="form-control" placeholder="Nilai" name="nilai" id="nilai" value="<?php echo isset($nilai) ? (int) $nilai : ''; ?>" required>
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="tanggal" class="col-sm-2 col-form-label">Tanggal</label>
-                                <div class="col-sm-10">
-                                    <input type="date" class="form-control" placeholder="Tanggal" name="tanggal" id="tanggal" value="<?php echo isset($tanggal) ? htmlspecialchars($tanggal) : ''; ?>" required>
-                                </div>
-                            </div>
-
                             <div class="col-12 text-end">
                                 <button type="submit" name="submit" class="btn btn-primary btn-custom px-3">
                                     <i class="bi bi-cloud-arrow-up-fill"></i>
@@ -305,7 +253,7 @@ $urut = 1;
                 <!-- Card: Data Materi -->
                 <div class="card custom-card mt-4">
                     <div class="card-header custom-header">
-                        Data Soal Soal
+                        Data Nama Kelompok
                     </div>
                     <div class="card-body">
                         <!-- Add a wrapper div for the table -->
@@ -314,13 +262,8 @@ $urut = 1;
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Nama Pengguna</th>
-                                        <th scope="col">Jawaban Benar</th>
-                                        <th scope="col">Jawaban Salah</th>
-                                        <th scope="col">Jawaban Kosong</th>
-                                        <th scope="col">Nilai</th>
-                                        <th scope="col">Tanggal</th>
-                                        <th scope="col">Status</th>
+                                        <th scope="col">Nama Peran</th>
+                                        <th scope="col">Nama Akun</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -328,22 +271,17 @@ $urut = 1;
                                     <?php while ($row = $result->fetch_assoc()) { ?>
                                         <tr>
                                             <th scope="row"><?php echo $urut++; ?></th>
+                                            <td><?= htmlspecialchars($row['id_master']); ?></td>
                                             <td><?= htmlspecialchars($row['namaLengkap']); ?></td>
-                                            <td><?= (int)$row['benar']; ?> </td>
-                                            <td><?= (int)$row['salah']; ?></td>
-                                            <td><?= (int)$row['kosong']; ?></td>
-                                            <td><?= (int)$row['nilai']; ?></td>
-                                            <td><?= htmlspecialchars($row['tanggal']); ?></td>
-                                            <td><?= htmlspecialchars($row['status']); ?></td>
                                             <td>
                                                 <!-- Tombol Edit -->
-                                                <a href="nilai.php?op=edit&id_nilai=<?= $row['id_nilai']; ?>">
+                                                <a href="kelola_aksesguru.php?op=edit&id_akses=<?= $row['id_akses']; ?>">
                                                     <button type="button" class="btn btn-warning btn-sm btn-custom">
                                                         <i class="bi bi-pen-fill"></i>
                                                     </button>
                                                 </a>
                                                 <!-- Tombol Hapus -->
-                                                <a href="nilai.php?op=delete&id_nilai=<?= $row['id_nilai']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                <a href="kelola_aksesguru.php?op=delete&id_akses=<?= $row['id_akses']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">
                                                     <button type="button" class="btn btn-danger btn-sm btn-custom">
                                                         <i class="bi bi-trash-fill"></i>
                                                     </button>
@@ -356,18 +294,14 @@ $urut = 1;
                         </div>
                     </div>
                 </div>
-
             </main>
-
-
             <?php include 'footer.php'; ?>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="guru_home.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+
 </body>
 
 </html>

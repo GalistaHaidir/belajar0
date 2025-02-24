@@ -102,11 +102,20 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="guru_home.css">
     <title>Kelola Tugas</title>
     <style>
-         /* Styling body */
-         .content {
+        /* Styling body */
+        .content {
             background: linear-gradient(135deg, rgb(255, 255, 255), rgb(244, 255, 246));
             color: #1B5E20;
             /* Warna hijau tua */
+        }
+
+        .animated-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .animated-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -117,62 +126,65 @@ if (isset($_POST['submit'])) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4">
-                <a class="btn btn-outline-danger"
-                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
-                    onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i>
-                    <span>Kembali</span>
-                </a>
-                <div class="mb-3 mt-2">
+
+                <div class="mb-3 mt-4">
                     <div class="row">
-                        <div class="col-12 col-md-4">
-                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='kelompok_crud.php';">
+                        <div class="col-12 col-md-4 mb-3">
+                            <div class="card card-nilai border-primary shadow-lg animated-card" style="cursor: pointer;" onclick="window.location.href='kelompok_crud.php';">
                                 <div class="card-body py-4 text-center">
                                     <div class="icon mb-3">
-                                        <i class="fas fa-cogs fa-3x"></i> <!-- Ikon untuk kartu -->
+                                        <i class="fas fa-users fa-3x text-primary"></i> <!-- Ikon untuk kartu -->
                                     </div>
                                     <h5 class="card-title">Kelola Nama Kelompok</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-4">
-                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='akses_kelompok.php';">
+                        <div class="col-12 col-md-4 mb-3">
+                            <div class="card card-nilai border-success shadow-lg animated-card" style="cursor: pointer;" onclick="window.location.href='akses_kelompok.php';">
                                 <div class="card-body py-4 text-center">
                                     <div class="icon mb-3">
-                                        <i class="fas fa-book fa-3x"></i> <!-- Ikon untuk kartu -->
+                                        <i class="fas fa-key fa-3x text-success"></i> <!-- Ikon untuk kartu -->
                                     </div>
                                     <h5 class="card-title">Kelola Akses Kelompok</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-4">
-                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='atur_tugas.php';">
+                        <div class="col-12 col-md-4 mb-3">
+                            <div class="card card-nilai border-warning shadow-lg animated-card" style="cursor: pointer;" onclick="window.location.href='atur_tugas.php';">
                                 <div class="card-body py-4 text-center">
                                     <div class="icon mb-3">
-                                        <i class="fas fa-chart-bar fa-3x"></i> <!-- Ikon untuk kartu -->
+                                        <i class="fas fa-tasks fa-3x text-warning"></i> <!-- Ikon untuk kartu -->
                                     </div>
                                     <h5 class="card-title">Kelola Tugas</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-4">
-                            <div class="card shadow card-nilai" style="cursor: pointer;" onclick="window.location.href='aturnilai_tugas.php';">
+                        <div class="col-12 col-md-4 mb-3">
+                            <div class="card card-nilai border-secondary shadow-lg animated-card" style="cursor: pointer;" onclick="window.location.href='aturnilai_tugas.php';">
                                 <div class="card-body py-4 text-center">
                                     <div class="icon mb-3">
-                                        <i class="fas fa-chart-bar fa-3x"></i> <!-- Ikon untuk kartu -->
+                                        <i class="fas fa-tasks fa-3x text-warning"></i> <!-- Ikon untuk kartu -->
                                     </div>
-                                    <h5 class="card-title">Kelola Nilai</h5>
-                                    <p class="card-text">Lorem ipsum dolor sit amet.</p>
+                                    <h5 class="card-title">Kelola Nilai Tugas</h5>
                                 </div>
                             </div>
                         </div>
 
+                        <div class="col-12 col-md-4 mb-3">
+                            <div class="card card-nilai border-danger shadow-lg animated-card" style="cursor: pointer;" onclick="window.location.href='lihat_chat.php';">
+                                <div class="card-body py-4 text-center">
+                                    <div class="icon mb-3">
+                                        <i class="fas fa-tasks fa-3x text-warning"></i> <!-- Ikon untuk kartu -->
+                                    </div>
+                                    <h5 class="card-title">Pantau Diskusi</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                    
                     </div>
                 </div>
             </main>
@@ -184,11 +196,7 @@ if (isset($_POST['submit'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <script>
-        function navigateToPage() {
-            window.history.back();
-        }
-    </script>
+ 
 </body>
 
 </html>

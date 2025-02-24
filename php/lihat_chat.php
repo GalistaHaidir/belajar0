@@ -1,24 +1,36 @@
 <?php
 session_start();
+include 'koneksi.php';
 
-
-include 'koneksi.php'; // Koneksi ke database
-
-// Ambil id_proyek dari parameter URL
-if (!isset($_GET['id_proyek'])) {
-    die("Error: ID Proyek tidak ditemukan.");
+// Periksa apakah pengguna sudah login
+if (!isset($_SESSION['id_pengguna'])) {
+    header("Location: login.php"); // Redirect ke halaman login jika belum login
+    exit;
 }
-$id_proyek = $_GET['id_proyek'];
 
-// Query untuk mengambil detail proyek berdasarkan id_proyek
-$query_proyek = $koneksi->prepare("SELECT * FROM tugas WHERE id_proyek = ?");
-$query_proyek->bind_param("i", $id_proyek);
-$query_proyek->execute();
-$proyek = $query_proyek->get_result()->fetch_assoc();
+$sessionUsername = $_SESSION['admin_username'];
 
-if (!$proyek) {
-    die("Error: Proyek tidak ditemukan.");
+// Ambil data user dari database
+$query = "SELECT fotoProfil FROM pengguna WHERE username = '$sessionUsername'";
+$result = mysqli_query($koneksi, $query);
+
+// Periksa apakah ada hasil
+if ($result && mysqli_num_rows($result) > 0) {
+    $data = mysqli_fetch_assoc($result);
+    $fotoProfil = $data['fotoProfil'];
+} else {
+    // Jika data tidak ditemukan, set nilai default
+    $fotoProfil = "default.jpg";
 }
+
+// Ambil daftar proyek dan kelompok yang tersedia
+$query = "
+    SELECT DISTINCT d.id_proyek, d.id_kelompok, k.nama_kelompok
+    FROM diskusi d
+    JOIN kelompok k ON d.id_kelompok = k.id_kelompok
+    ORDER BY d.id_proyek, d.id_kelompok
+";
+$result = $koneksi->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -27,77 +39,72 @@ if (!$proyek) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitor Chat Diskusi Siswa</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .chat-container {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-
-        .chat-message {
-            margin-bottom: 10px;
-        }
-
-        .chat-message .sender {
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .chat-message .time {
-            font-size: 0.8em;
-            color: #666;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="guru_home.css">
+    <title>Pantau Diskusi Siswa</title>
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Monitor Chat Diskusi Siswa</h1>
-        <hr>
-
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="card-title mb-0">Proyek: <?= htmlspecialchars($proyek['judul_tugas']) ?></h5>
-            </div>
-            <div class="card-body">
-                <div class="chat-container">
-                    <?php
-                    // Query untuk mengambil chat dari proyek ini
-                    $query_chat = $koneksi->prepare("
-                        SELECT d.chat, p.namaLengkap, d.waktu 
-                        FROM diskusi d 
-                        JOIN pengguna p ON d.id_pengguna = p.id_pengguna 
-                        WHERE d.id_proyek = ? 
-                        ORDER BY d.waktu ASC
-                    ");
-                    $query_chat->bind_param("i", $id_proyek);
-                    $query_chat->execute();
-                    $result_chat = $query_chat->get_result();
-
-                    if ($result_chat->num_rows > 0) {
-                        while ($chat = $result_chat->fetch_assoc()):
-                    ?>
-                            <div class="chat-message">
-                                <div class="sender"><?= htmlspecialchars($chat['namaLengkap']) ?></div>
-                                <div class="message"><?= nl2br(htmlspecialchars($chat['chat'])) ?></div>
-                                <div class="time"><?= date('d M Y H:i', strtotime($chat['waktu'])) ?></div>
+    <div class="wrapper">
+        <?php include 'sidebar.php'; ?>
+        <div class="main">
+            <?php include 'navbar.php'; ?>
+            <main class="content px-3 py-4">
+                <a class="btn btn-outline-danger"
+                    style="border-radius: 50px; margin-bottom: 15px;"
+                    onclick="window.location.href='kelola_tugas.php';">
+                    <i class="bi bi-arrow-left-circle-fill me-2"></i>
+                    <span>Kembali</span>
+                </a>
+                <div class="container mt-1">
+                    <h2 class="text-center">📊 Pantau Diskusi Siswa</h2>
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <h5>📌 Pilih Kelompok</h5>
+                            <ul class="list-group">
+                                <?php while ($row = $result->fetch_assoc()) { ?>
+                                    <li class="list-group-item">
+                                        <a href="#" class="chat-link" data-proyek="<?= $row['id_proyek']; ?>" data-kelompok="<?= $row['id_kelompok']; ?>">
+                                            Proyek <?= htmlspecialchars($row['id_proyek']); ?> - Kelompok <?= htmlspecialchars($row['nama_kelompok']); ?>
+                                        </a>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>💬 Chat Diskusi</h5>
+                            <div id="chat-container" style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #f9f9f9;">
+                                <p>Pilih kelompok untuk melihat chat.</p>
                             </div>
-                    <?php
-                        endwhile;
-                    } else {
-                        echo "<div class='text-muted'>Belum ada chat untuk proyek ini.</div>";
-                    }
-                    ?>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </main>
+            <?php include 'footer.php'; ?>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="guru_home.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function navigateToPage() {
+            window.history.back();
+        }
+        $(document).ready(function() {
+            $(".chat-link").click(function(e) {
+                e.preventDefault();
+                let id_proyek = $(this).data("proyek");
+                let id_kelompok = $(this).data("kelompok");
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                $("#chat-container").html("<p>Memuat chat...</p>");
+                $("#chat-container").load("tampil_chat.php?id_proyek=" + id_proyek + "&id_kelompok=" + id_kelompok);
+            });
+        });
+    </script>
 </body>
 
 </html>

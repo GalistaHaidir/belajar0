@@ -218,8 +218,7 @@ if (isset($_GET['dateline'])) {
 
                         <!-- Header -->
                         <div class="header">
-                            <h2>📚 Dashboard LMS</h2>
-                            <p class="lead">Selamat Datang! Akses materi, tugas, dan soal dengan mudah.</p>
+                            <h2>📚 Dashboard </h2>
                         </div>
 
                         <!-- Statistik Card -->

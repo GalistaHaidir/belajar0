@@ -60,6 +60,7 @@ if (isset($_GET['op'])) {
             color: #1B5E20;
             /* Warna hijau tua */
         }
+
         .grid-template {
             display: grid;
             grid-template-columns: 150px auto;
@@ -76,13 +77,8 @@ if (isset($_GET['op'])) {
         <div class="main">
             <?php include 'navbar.php'; ?>
             <main class="content px-3 py-4 mt-1">
-                <a class="btn btn-outline-danger"
-                    style="border-top-left-radius: 50px; border-bottom-left-radius: 50px; margin-bottom:10px;"
-                    onclick="navigateToPage()">
-                    <i class="bi bi-backspace-fill"></i>
-                    <span>Kembali</span>
-                </a>
-                <div class="container-fluid">
+
+                <div class="container-fluid mt-4">
                     <div class="row justify-content-center">
                         <!-- Card Foto Profil -->
                         <div class="col-md-4">
@@ -140,11 +136,6 @@ if (isset($_GET['op'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <script>
-        function navigateToPage() {
-            window.history.back();
-        }
-    </script>
 </body>
 
 </html>
