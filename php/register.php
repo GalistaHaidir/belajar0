@@ -115,7 +115,7 @@ if (isset($_POST['submit'])) {
     </nav>
 
     <div class="d-flex justify-content-center align-items-center" style="height: 90vh; margin: 20px;">
-        <div class="mx-auto  text-white"
+        <div class="mx-auto text-white card-blur"
             style="background-color: rgba(0, 0, 0, 0.5); height: auto; width: 390px; border-radius: 20px;">
             <h3 class="px-3 pt-3">Daftar Akun</h3>
             <hr>
