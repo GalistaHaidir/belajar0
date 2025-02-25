@@ -2,9 +2,7 @@
     <div class="container-fluid">
         <div class="row text-body-secondary">
             <div class="col-6 text-start">
-                <a href="" class="text-body-secondary">
-                    <strong style="font-family: 'Playfair Display', sans-serif;">Belajar.0</strong>
-                </a>
+                <img src="logo.png" alt="Logo Belajar.0" style="height: 30px; width: auto;">
             </div>
         </div>
     </div>
