@@ -31,6 +31,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 // Inisialisasi variabel
 $id_nilai = "";
 $id_pengguna = "";
+$id_peraturan = "";
 $benar = "";
 $salah = "";
 $kosong = "";
@@ -67,6 +68,7 @@ if ($op == 'edit') {
     $q = mysqli_query($koneksi, $sql);
     $r = mysqli_fetch_array($q);
     $id_pengguna = $r['id_pengguna'];
+    $id_peraturan = $r['id_peraturan'];
     $benar = $r['benar'];
     $salah = $r['salah'];
     $kosong = $r['kosong'];
@@ -82,6 +84,7 @@ if ($op == 'edit') {
 // Handle Create atau Update
 if (isset($_POST['submit'])) {
     $id_pengguna = $_POST['id_pengguna'];
+    $id_peraturan = $_POST['id_peraturan'];
     $benar = $_POST['benar'];
     $salah = $_POST['salah'];
     $kosong = $_POST['kosong'];
@@ -90,9 +93,9 @@ if (isset($_POST['submit'])) {
     $status = $_POST['status'];
 
     // Validasi input
-    if ($id_pengguna && $benar && $salah && $kosong && $nilai && $tanggal && $status) {
+    if ($id_pengguna && $benar && $salah && $kosong && $nilai && $tanggal && $status && $id_peraturan) {
         if ($op == 'edit') { // Update
-            $sql = "UPDATE tbl_nilai SET id_pengguna = '$id_pengguna', benar = '$benar', salah = '$salah', kosong = '$kosong', nilai = '$nilai', tanggal = '$tanggal', status = '$status' WHERE id_nilai = '$id_nilai'";
+            $sql = "UPDATE tbl_nilai SET id_pengguna = '$id_pengguna', id_peraturan = '$id_peraturan', benar = '$benar', salah = '$salah', kosong = '$kosong', nilai = '$nilai', tanggal = '$tanggal', status = '$status' WHERE id_nilai = '$id_nilai'";
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
                 $sukses = "Data berhasil diperbarui.";
@@ -100,7 +103,7 @@ if (isset($_POST['submit'])) {
                 $error = "Data gagal diperbarui.";
             }
         } else { // Insert
-            $sql = "INSERT INTO tbl_nilai (id_pengguna, benar, salah, kosong, nilai, tanggal, status) VALUES ('$id_pengguna', '$benar', '$salah', '$kosong', '$nilai', '$tanggal', '$status')";
+            $sql = "INSERT INTO tbl_nilai (id_pengguna, id_peraturan, benar, salah, kosong, nilai, tanggal, status) VALUES ('$id_pengguna', '$id_peraturan', '$benar', '$salah', '$kosong', '$nilai', '$tanggal', '$status')";
             $q = mysqli_query($koneksi, $sql);
             if ($q) {
                 $sukses = "Berhasil menambahkan data baru.";
@@ -114,7 +117,14 @@ if (isset($_POST['submit'])) {
 }
 
 // Fetch Data with JOIN to include namaLengkap
-$query = "SELECT tbl_nilai.*, pengguna.namaLengkap FROM tbl_nilai JOIN pengguna ON tbl_nilai.id_pengguna = pengguna.id_pengguna";
+$query = "SELECT 
+    tbl_nilai.*, 
+    pengguna.namaLengkap, 
+    tbl_pengaturan.nama_ujian
+FROM tbl_nilai 
+JOIN pengguna ON tbl_nilai.id_pengguna = pengguna.id_pengguna
+JOIN tbl_pengaturan ON tbl_nilai.id_peraturan = tbl_pengaturan.id_peraturan;
+";
 $result = $koneksi->query($query);
 
 // Check if the query was successful
@@ -266,7 +276,21 @@ $urut = 1;
                                     </select>
                                 </div>
                             </div>
-
+                            <div class="mb-3 row">
+                                <label for="nama_ujian" class="col-sm-2 col-form-label">Nama Soal</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="id_peraturan" id="nama_ujian" required>
+                                        <option value="" disabled selected>-- Pilih Nama Soal --</option>
+                                        <?php
+                                        // Ambil data nama_ujian dari tabel pengguna
+                                        $result_soal = $koneksi->query("SELECT id_peraturan, nama_ujian FROM tbl_pengaturan");
+                                        while ($row_soal = $result_soal->fetch_assoc()) {
+                                            echo "<option value='" . $row_soal['id_peraturan'] . "'>" . $row_soal['nama_ujian'] . "</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="mb-3 row">
                                 <label for="benar" class="col-sm-2 col-form-label">Jumlah Jawaban Benar</label>
                                 <div class="col-sm-10">
@@ -320,6 +344,7 @@ $urut = 1;
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Nama Pengguna</th>
+                                        <th scope="col">Nama Soal</th>
                                         <th scope="col">Jawaban Benar</th>
                                         <th scope="col">Jawaban Salah</th>
                                         <th scope="col">Jawaban Kosong</th>
@@ -334,6 +359,7 @@ $urut = 1;
                                         <tr>
                                             <th scope="row"><?php echo $urut++; ?></th>
                                             <td><?= htmlspecialchars($row['namaLengkap']); ?></td>
+                                            <td><?= htmlspecialchars($row['nama_ujian']); ?></td>
                                             <td><?= (int)$row['benar']; ?> </td>
                                             <td><?= (int)$row['salah']; ?></td>
                                             <td><?= (int)$row['kosong']; ?></td>

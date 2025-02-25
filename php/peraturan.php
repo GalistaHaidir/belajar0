@@ -277,7 +277,7 @@ $result = $koneksi->query("SELECT * FROM tbl_pengaturan");
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Nama Ujian</th>
+                                        <th scope="col">Nama Soal</th>
                                         <th scope="col">Waktu</th>
                                         <th scope="col">Nilai Minimal</th>
                                         <th scope="col">Peraturan</th>
