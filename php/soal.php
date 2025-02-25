@@ -8,6 +8,11 @@ if (!isset($_SESSION['id_pengguna'])) {
     exit;
 }
 
+if (!in_array("Guru", $_SESSION['akses'])) {
+    echo "Kamu tidak punya akses";
+    exit();
+}
+
 $sessionUsername = $_SESSION['admin_username'];
 
 // Ambil data user dari database

@@ -7,6 +7,11 @@ if (!isset($_SESSION['session_username'])) {
     header("location:login.php");
 }
 
+if (!in_array("Guru", $_SESSION['akses'])) {
+    echo "Kamu tidak punya akses";
+    exit();
+}
+
 $sessionUsername = $_SESSION['admin_username'];
 
 // Ambil data user dari database
