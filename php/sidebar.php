@@ -77,7 +77,7 @@
                 </li>
                 <li class="sidebar-item">
                     <a href="tugas_kelompok.php" class="sidebar-link">
-                        Tugas Kelompok
+                        Project Based Learning
                     </a>
                 </li>
             </ul>

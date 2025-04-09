@@ -34,7 +34,6 @@ $judul_tugas = "";
 $deskripsi = "";
 $dateline = "";
 $akses = "";
-$tahap = NULL;
 $id_proyek = NULL;
 
 $sukses = "";
@@ -55,8 +54,7 @@ if (isset($_POST['submit'])) {
         $error = "Format tanggal tidak valid!";
     }
 
-    // Cek apakah `tahap` dan `id_proyek` ada, jika tidak maka NULL
-    $tahap = isset($_POST['tahap']) && $_POST['tahap'] !== "" ? $_POST['tahap'] : NULL;
+    // Cek apakah `id_proyek` ada, jika tidak maka NULL
     $id_proyek = isset($_POST['id_proyek']) && $_POST['id_proyek'] !== "" ? $_POST['id_proyek'] : NULL;
 
     // Validasi input
@@ -66,14 +64,14 @@ if (isset($_POST['submit'])) {
         if (isset($_GET['op']) && $_GET['op'] == 'edit') {
             // Mode Edit
             $id_tugas = $_GET['id_tugas'];
-            $sql = "UPDATE tugas SET judul_tugas = ?, deskripsi = ?, dateline = ?, akses = ?, tahap = ?, id_proyek = ? WHERE id_tugas = ?";
+            $sql = "UPDATE tugas SET judul_tugas = ?, deskripsi = ?, dateline = ?, akses = ?, id_proyek = ? WHERE id_tugas = ?";
             $stmt = mysqli_prepare($koneksi, $sql);
-            mysqli_stmt_bind_param($stmt, "ssssssi", $judul_tugas, $deskripsi, $dateline, $akses, $tahap, $id_proyek, $id_tugas);
+            mysqli_stmt_bind_param($stmt, "sssssi", $judul_tugas, $deskripsi, $dateline, $akses, $id_proyek, $id_tugas);
         } else {
             // Mode Insert (Tambah Data)
-            $sql = "INSERT INTO tugas (judul_tugas, deskripsi, dateline, akses, tahap, id_proyek) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO tugas (judul_tugas, deskripsi, dateline, akses, id_proyek) VALUES (?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($koneksi, $sql);
-            mysqli_stmt_bind_param($stmt, "ssssss", $judul_tugas, $deskripsi, $dateline, $akses, $tahap, $id_proyek);
+            mysqli_stmt_bind_param($stmt, "sssss", $judul_tugas, $deskripsi, $dateline, $akses, $id_proyek);
         }
 
         // Eksekusi query
@@ -116,7 +114,6 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
         $deskripsi = $r['deskripsi'];
         $dateline = date('Y-m-d\TH:i', strtotime($r['dateline'])); // Konversi agar sesuai input HTML
         $akses = $r['akses'];
-        $tahap = $r['tahap'];
         $id_proyek = $r['id_proyek'];
     }
     mysqli_stmt_close($stmt);
@@ -125,7 +122,6 @@ if (isset($_GET['op']) && $_GET['op'] == 'edit') {
     $deskripsi = "";
     $dateline = "";
     $akses = "";
-    $tahap = "";
     $id_proyek = "";
 }
 
@@ -267,9 +263,10 @@ $urut = 1;
                             <div class="mb-3 row">
                                 <label for="deskripsi" class="col-sm-2 col-form-label">Deskripsi</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" placeholder="Deskripsi Tugas" name="deskripsi" value="<?php echo $deskripsi ?>" id="deskripsi">
+                                    <textarea class="form-control" placeholder="Deskripsi Tugas" name="deskripsi" id="deskripsi" rows="4"><?php echo $deskripsi; ?></textarea>
                                 </div>
                             </div>
+
                             <div class="mb-3 row">
                                 <label for="dateline" class="col-sm-2 col-form-label">Tenggat Waktu</label>
                                 <div class="col-sm-10">
@@ -284,21 +281,6 @@ $urut = 1;
                                         <option value="individu" <?= ($akses == 'individu') ? 'selected' : ''; ?>>Individu</option>
                                         <option value="kelompok" <?= ($akses == 'kelompok') ? 'selected' : ''; ?>>Kelompok</option>
                                         <option value="umum" <?= ($akses == 'umum') ? 'selected' : ''; ?>>Umum</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="mb-3 row">
-                                <label for="tahap" class="col-sm-2 col-form-label">Tahap</label>
-                                <div class="col-sm-10">
-                                    <select class="form-select" id="tahap" name="tahap">
-                                        <option value="" disabled selected>-- Pilih Tahap --</option>
-                                        <option value="studi_kasus" <?= ($tahap == 'studi_kasus') ? 'selected' : ''; ?>>Studi Kasus</option>
-                                        <option value="perencanaan" <?= ($tahap == 'perencanaan') ? 'selected' : ''; ?>>Perencanaan</option>
-                                        <option value="eksplorasi" <?= ($tahap == 'eksplorasi') ? 'selected' : ''; ?>>Eksplorasi</option>
-                                        <option value="pengembangan" <?= ($tahap == 'pengembangan') ? 'selected' : ''; ?>>Pengembangan</option>
-                                        <option value="presentasi" <?= ($tahap == 'presentasi') ? 'selected' : ''; ?>>Presentasi</option>
-                                        <option value="evaluasi" <?= ($tahap == 'evaluasi') ? 'selected' : ''; ?>>Evaluasi</option>
-                                        <option value="penilaian" <?= ($tahap == 'penilaian') ? 'selected' : ''; ?>>Penilaian</option>
                                     </select>
                                 </div>
                             </div>
@@ -333,7 +315,6 @@ $urut = 1;
                                         <th scope="col">Deskripsi</th>
                                         <th scope="col">Tenggat Waktu</th>
                                         <th scope="col">Akses</th>
-                                        <th scope="col">Tahap</th>
                                         <th scope="col">ID Proyek</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
@@ -346,7 +327,6 @@ $urut = 1;
                                             <td><?= htmlspecialchars($row['deskripsi']); ?></td>
                                             <td><?= htmlspecialchars($row['dateline']); ?></td>
                                             <td><?= htmlspecialchars($row['akses']); ?></td>
-                                            <td><?= htmlspecialchars($row['tahap']); ?></td>
                                             <td><?= (int)$row['id_proyek']; ?> </td>
                                             <td>
                                                 <!-- Tombol Edit -->

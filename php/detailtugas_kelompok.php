@@ -26,6 +26,7 @@ if ($result && mysqli_num_rows($result) > 0) {
 $id_proyek = $_GET['id_proyek'] ?? 0;
 $id_pengguna = $_SESSION['id_pengguna'] ?? 0;
 
+
 // Pastikan user login
 if (!$id_pengguna) {
     die("Silakan login terlebih dahulu.");
@@ -59,6 +60,19 @@ $tugas_list = $result_tugas->fetch_all(MYSQLI_ASSOC);
 if (!$tugas_list) {
     die("Tidak ada tugas untuk proyek ini.");
 }
+
+// Fungsi untuk mendapatkan tugas berdasarkan urutan yang dipilih
+function getTugasByUrutan($tugas_list, $urutan)
+{
+    if ($urutan > 0 && $urutan <= count($tugas_list)) {
+        return $tugas_list[$urutan - 1];
+    }
+    return null;
+}
+
+// Cek apakah ada urutan yang dipilih
+$selected_urutan = $_GET['urutan'] ?? 1;
+$selected_tugas = getTugasByUrutan($tugas_list, $selected_urutan);
 ?>
 
 
@@ -159,35 +173,55 @@ if (!$tugas_list) {
                     <span>Kembali</span>
                 </a>
                 <div class="container">
-                    <h1 class="mb-4 text-center text-primary">📚 Daftar Tugas dalam Proyek</h1>
-                    <div class="row">
-                        <?php foreach ($tugas_list as $tugas): ?>
-                            <?php
-                            // Cek apakah tugas sudah dikumpulkan
-                            $query_pengumpulan = $koneksi->prepare("
+                    <h1 class="mb-4 text-center text-primary">📚 Project Based Learning</h1>
+
+                    <!-- Dropdown untuk memilih urutan tugas -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <label class="input-group-text" for="selectUrutan">Urutan Tugas:</label>
+                                <select class="form-select" id="selectUrutan" onchange="changeUrutan(this.value)">
+                                    <?php foreach ($tugas_list as $index => $tugas): ?>
+                                        <option value="<?= $index + 1 ?>" <?= ($index + 1 == $selected_urutan) ? 'selected' : '' ?>>
+                                            Tugas <?= $index + 1 ?>: <?= htmlspecialchars($tugas['judul_tugas']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tampilkan hanya tugas yang dipilih -->
+                    <?php if ($selected_tugas): ?>
+                        <?php
+                        // Cek apakah tugas sudah dikumpulkan
+                        $query_pengumpulan = $koneksi->prepare("
             SELECT * FROM pengumpulan_tugas WHERE id_kelompok = ? AND id_tugas = ?
         ");
-                            $query_pengumpulan->bind_param("ii", $id_kelompok, $tugas['id_tugas']);
-                            $query_pengumpulan->execute();
-                            $result_pengumpulan = $query_pengumpulan->get_result();
-                            $pengumpulan = $result_pengumpulan->fetch_assoc();
+                        $query_pengumpulan->bind_param("ii", $id_kelompok, $selected_tugas['id_tugas']);
+                        $query_pengumpulan->execute();
+                        $result_pengumpulan = $query_pengumpulan->get_result();
+                        $pengumpulan = $result_pengumpulan->fetch_assoc();
 
-                            // Warna kartu berdasarkan status
-                            $card_class = $pengumpulan ? 'border-success' : 'border-warning';
-                            $status_badge = $pengumpulan
-                                ? '<span class="badge bg-success">✅ Sudah Dikumpulkan</span>'
-                                : '<span class="badge bg-warning text-dark">⚠️ Belum Dikumpulkan</span>';
-                            ?>
+                        // Warna kartu berdasarkan status
+                        $card_class = $pengumpulan ? 'border-success' : 'border-warning';
+                        $status_badge = $pengumpulan
+                            ? '<span class="badge bg-success">✅ Sudah Dikumpulkan</span>'
+                            : '<span class="badge bg-warning text-dark">⚠️ Belum Dikumpulkan</span>';
+                        ?>
 
+                        <div class="row">
                             <div class="col-md-12 mb-3">
                                 <div class="card shadow-lg <?= $card_class; ?>">
                                     <div class="card-body">
-                                        <h4 class="fw-bold"><?= htmlspecialchars($tugas['judul_tugas']); ?></h4>
+                                        <h4 class="fw-bold"><?= htmlspecialchars($selected_tugas['judul_tugas']); ?></h4>
                                         <p><strong>📅 Deadline:</strong>
-                                            <span class="badge bg-danger"><?= htmlspecialchars($tugas['dateline']); ?></span>
+                                            <span class="badge bg-danger"><?= htmlspecialchars($selected_tugas['dateline']); ?></span>
                                         </p>
                                         <p><strong>📌 Deskripsi:</strong></p>
-                                        <div class="alert alert-light"><?= nl2br(htmlspecialchars($tugas['deskripsi'])); ?></div>
+                                        <div class="alert alert-light">
+                                            <?= nl2br(htmlspecialchars(str_replace(["\r\n", "\r"], "\n", $selected_tugas['deskripsi']))); ?>
+                                        </div>
 
                                         <?= $status_badge; ?>
 
@@ -215,7 +249,7 @@ if (!$tugas_list) {
                                                 <div class="tab-pane fade show active" id="upload" role="tabpanel">
                                                     <form action="upload_tugas_kelompok.php" method="POST" enctype="multipart/form-data">
                                                         <input type="hidden" name="id_proyek" value="<?= $id_proyek; ?>">
-                                                        <input type="hidden" name="id_tugas" value="<?= $tugas['id_tugas']; ?>">
+                                                        <input type="hidden" name="id_tugas" value="<?= $selected_tugas['id_tugas']; ?>">
                                                         <div class="mb-3">
                                                             <input type="file" name="file_tugas" class="form-control" required>
                                                         </div>
@@ -232,17 +266,17 @@ if (!$tugas_list) {
                                                             <div class="card p-3">
                                                                 <div class="mb-3">
                                                                     <label class="fw-bold">HTML</label>
-                                                                    <textarea id="html-code-<?= htmlspecialchars($tugas['id_tugas']); ?>" class="form-control"></textarea>
+                                                                    <textarea id="html-code-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" class="form-control"></textarea>
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label class="fw-bold">CSS</label>
-                                                                    <textarea id="css-code-<?= htmlspecialchars($tugas['id_tugas']); ?>" class="form-control"></textarea>
+                                                                    <textarea id="css-code-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" class="form-control"></textarea>
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label class="fw-bold">JavaScript</label>
-                                                                    <textarea id="js-code-<?= htmlspecialchars($tugas['id_tugas']); ?>" class="form-control"></textarea>
+                                                                    <textarea id="js-code-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" class="form-control"></textarea>
                                                                 </div>
-                                                                <button class="btn btn-primary w-100 mt-2" onclick="runCode(<?= htmlspecialchars($tugas['id_tugas']); ?>)">
+                                                                <button class="btn btn-primary w-100 mt-2" onclick="runCode(<?= htmlspecialchars($selected_tugas['id_tugas']); ?>)">
                                                                     ▶️ Jalankan Kode
                                                                 </button>
                                                             </div>
@@ -251,16 +285,16 @@ if (!$tugas_list) {
                                                         <div class="col-md-6">
                                                             <h5 class="text-center">🔍 Output:</h5>
                                                             <div class="card p-3">
-                                                                <iframe id="output-<?= htmlspecialchars($tugas['id_tugas']); ?>" class="w-100" style="height: 300px;"></iframe>
+                                                                <iframe id="output-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" class="w-100" style="height: 300px;"></iframe>
                                                             </div>
 
                                                             <!-- Form untuk mengirim kode -->
-                                                            <form id="submit-code-form-<?= htmlspecialchars($tugas['id_tugas']); ?>" method="POST">
+                                                            <form id="submit-code-form-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" method="POST">
                                                                 <input type="hidden" name="id_proyek" value="<?= htmlspecialchars($id_proyek); ?>">
-                                                                <input type="hidden" name="id_tugas" value="<?= htmlspecialchars($tugas['id_tugas']); ?>">
-                                                                <input type="hidden" id="html-input-<?= htmlspecialchars($tugas['id_tugas']); ?>" name="html_code">
-                                                                <input type="hidden" id="css-input-<?= htmlspecialchars($tugas['id_tugas']); ?>" name="css_code">
-                                                                <input type="hidden" id="js-input-<?= htmlspecialchars($tugas['id_tugas']); ?>" name="js_code">
+                                                                <input type="hidden" name="id_tugas" value="<?= htmlspecialchars($selected_tugas['id_tugas']); ?>">
+                                                                <input type="hidden" id="html-input-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" name="html_code">
+                                                                <input type="hidden" id="css-input-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" name="css_code">
+                                                                <input type="hidden" id="js-input-<?= htmlspecialchars($selected_tugas['id_tugas']); ?>" name="js_code">
 
                                                                 <!-- Tombol submit di dalam form -->
                                                                 <button type="submit" class="btn btn-success w-100 mt-3">
@@ -320,13 +354,33 @@ if (!$tugas_list) {
                                                         <?php endif; ?>
                                                     </td>
                                                 </tr>
-
                                             </table>
                                         <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Navigasi antara tugas -->
+                    <div class="row mt-3">
+                        <div class="col-md-12 d-flex justify-content-between">
+                            <?php if ($selected_urutan > 1): ?>
+                                <a href="?id_proyek=<?= $id_proyek ?>&urutan=<?= $selected_urutan - 1 ?>" class="btn btn-primary">
+                                    ← Tugas Sebelumnya
+                                </a>
+                            <?php else: ?>
+                                <span class="btn btn-secondary disabled">← Tugas Sebelumnya</span>
+                            <?php endif; ?>
+
+                            <?php if ($selected_urutan < count($tugas_list)): ?>
+                                <a href="?id_proyek=<?= $id_proyek ?>&urutan=<?= $selected_urutan + 1 ?>" class="btn btn-primary">
+                                    Tugas Selanjutnya →
+                                </a>
+                            <?php else: ?>
+                                <span class="btn btn-secondary disabled">Tugas Selanjutnya →</span>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
@@ -433,6 +487,10 @@ if (!$tugas_list) {
 
         function toggleChat() {
             $("#chatBody").toggle();
+        }
+
+        function changeUrutan(urutan) {
+            window.location.href = `?id_proyek=<?= $id_proyek ?>&urutan=${urutan}`;
         }
     </script>
 </body>

@@ -74,14 +74,13 @@ $result = $koneksi->query($query);
             <main class="content px-3 py-4">
 
                 <div class="container">
-                    <h1 class="mt-4 mb-3">Pilih Tugas Kelompok</h1>
+                    <h1 class="mt-4 mb-3">Pilih Project Based Learning</h1>
                     <div class="row">
                         <?php while ($row = $result->fetch_assoc()) { ?>
                             <div class="col-md-4 mb-4">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title"><?= htmlspecialchars($row['judul_tugas']); ?></h5>
-                                        <p class="card-text">Durasi: <?= htmlspecialchars($row['dateline']); ?></p>
+                                        <h5 class="card-title">Tugas : <?= htmlspecialchars($row['id_proyek']); ?></h5>
                                         <a href="detailtugas_kelompok.php?id_proyek=<?= $row['id_proyek']; ?>" class="btn btn-primary">Lihat Detail Proyek</a>
                                     </div>
                                 </div>
