@@ -33,7 +33,7 @@ $result = $koneksi->query($query);
 $row = $result->fetch_assoc();
 $totalTugas = $row['total'];
 
-$query = "SELECT COUNT(*) as total FROM soal";
+$query = "SELECT COUNT(*) as total FROM tbl_soal";
 $result = $koneksi->query($query);
 $row = $result->fetch_assoc();
 $totalSoal = $row['total'];
