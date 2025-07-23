@@ -1,4 +1,5 @@
-<aside id="sidebar">
+<!-- Sesudah -->
+<aside id="sidebar" class="sidebar d-none d-md-flex">
     <div class="d-flex justify-content-between p-4">
         <div class="sidebar-logo">
             <img src="logo.png" alt="Logo Belajar.0">
@@ -9,106 +10,103 @@
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-item">
-            <a href="halaman_utama.php" class="sidebar-link">
-                <i class="bi bi-house-door-fill" style="color: #007bff;"></i>
-                <span>Halaman Utama</span>
+            <a href="dashboard.php" class="sidebar-link">
+                <i class="bi bi-speedometer2 me-1" style="color: #007bff;"></i>
+                <span>Dashboard</span>
             </a>
         </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#auth1" aria-expanded="false" aria-controls="auth1">
-                <i class="bi bi-file-earmark-code-fill" style="color:rgb(182, 219, 255);"></i>
-                <span>Materi</span>
-            </a>
-            <ul id="auth1" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                    <li class="sidebar-item">
-                        <a href="kelola_materi.php" class="sidebar-link">
-                            Kelola Materi
-                        </a>
-                    </li>
-                <?php } ?>
-                <li class="sidebar-item">
-                    <a href="materi.php" class="sidebar-link">
-                        Materi
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#auth2" aria-expanded="false" aria-controls="auth2">
-                <i class="bi bi-pencil-fill" style="color: #ff8c00;"></i>
-                <span>Soal</span>
-            </a>
-            <ul id="auth2" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                    <li class="sidebar-item">
-                        <a href="kelola_soal.php" class="sidebar-link">
-                            Kelola Soal
-                        </a>
-                    </li>
-                <?php } ?>
-                <li class="sidebar-item">
-                    <a href="kerjakan_soal.php" class="sidebar-link">
-                        Soal
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                data-bs-target="#auth4" aria-expanded="false" aria-controls="auth4">
-                <i class="bi bi-list-check" style="color: #20c997;"></i>
-                <span>Tugas</span>
-            </a>
-            <ul id="auth4" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                    <li class="sidebar-item">
-                        <a href="kelola_tugas.php" class="sidebar-link">
-                            Kelola Tugas
-                        </a>
-                    </li>
-                <?php } ?>
-                <li class="sidebar-item">
-                    <a href="tugas_individu.php" class="sidebar-link">
-                        Tugas Individu
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="tugas_kelompok.php" class="sidebar-link">
-                        Project Based Learning
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
+
+        <?php if ($_SESSION['role'] == 'admin'): ?>
+            <!-- Fitur Admin -->
             <li class="sidebar-item">
-                <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                    data-bs-target="#auth9" aria-expanded="false" aria-controls="auth9">
-                    <i class="bi bi-person-fill" style="color:rgb(164, 114, 255);"></i>
-                    <span>Akun</span>
+                <a href="manajemen_user.php" class="sidebar-link">
+                    <i class="bi bi-people-fill text-warning me-1"></i>
+                    <span>Manajemen Pengguna</span>
                 </a>
-                <ul id="auth9" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                    <?php if (in_array("Guru", $_SESSION['akses'])) { ?>
-                        <li class="sidebar-item">
-                            <a href="kelola_akunsiswa.php" class="sidebar-link">
-                                Kelola Akun
-                            </a>
-                        </li>
-                    <?php } ?>
-                    <li class="sidebar-item">
-                        <a href="kelola_aksesguru.php" class="sidebar-link">
-                            Kelola Akses Guru
-                        </a>
-                    </li>
-                </ul>
             </li>
-        <?php } ?>
+            <li class="sidebar-item">
+                <a href="manajemen_kelas.php" class="sidebar-link">
+                    <i class="bi bi-diagram-3-fill text-success me-1"></i>
+                    <span>Manajemen Kelas</span>
+                </a>
+            </li>
+
+            <!-- Fitur Guru -->
+            <li class="sidebar-item">
+                <a href="daftar_kursus.php" class="sidebar-link">
+                    <i class="bi bi-easel-fill text-info me-1"></i>
+                    <span>Kelas yang Saya Ampu</span>
+                </a>
+            </li>
+
+            <!-- MENU NILAI -->
+            <li class="sidebar-item">
+                <a href="nilai_tugas.php" class="sidebar-link">
+                    <i class="bi bi-clipboard-check me-1 text-primary"></i>
+                    <span>Nilai Tugas Individu</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="nilai_pjbl.php" class="sidebar-link">
+                    <i class="bi bi-kanban-fill me-1 text-primary"></i>
+                    <span>Nilai Tugas PjBL</span>
+                </a>
+            </li>
+
+            <!-- Fitur Siswa -->
+            <li class="sidebar-item">
+                <a href="kursusku.php" class="sidebar-link">
+                    <i class="bi bi-backpack-fill me-1"></i>
+                    <span>Kursusku</span>
+                </a>
+            </li>
+
+        <?php elseif ($_SESSION['role'] == 'guru'): ?>
+            <!-- Fitur Guru -->
+            <li class="sidebar-item">
+                <a href="daftar_kursus.php" class="sidebar-link">
+                    <i class="bi bi-easel-fill text-info me-1"></i>
+                    <span>Kelas yang Saya Ampu</span>
+                </a>
+            </li>
+
+            <!-- MENU NILAI -->
+            <li class="sidebar-item">
+                <a href="nilai_tugas.php" class="sidebar-link">
+                    <i class="bi bi-clipboard-check me-1 text-primary"></i>
+                    <span>Nilai Tugas Individu</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="nilai_pjbl.php" class="sidebar-link">
+                    <i class="bi bi-kanban-fill me-1 text-primary"></i>
+                    <span>Nilai Tugas PjBL</span>
+                </a>
+            </li>
+
+        <?php elseif ($_SESSION['role'] == 'siswa'): ?>
+            <!-- Fitur Siswa -->
+            <li class="sidebar-item">
+                <a href="kursusku.php" class="sidebar-link">
+                    <i class="bi bi-backpack-fill me-1"></i>
+                    <span>Kursusku</span>
+                </a>
+            </li>
+
+            <!-- Rangkuman Nilai -->
+            <li class="sidebar-item">
+                <a href="rangkuman_nilai.php" class="sidebar-link">
+                    <i class="bi bi-clipboard-data-fill me-1 text-success"></i>
+                    <span>Rangkuman Nilai</span>
+                </a>
+            </li>
+        <?php endif; ?>
+
     </ul>
+
     <div class="sidebar-footer mb-1">
         <a href="logout.php" class="sidebar-link">
-            <i class="bi bi-door-open-fill" style="color:rgb(255, 0, 0);"></i>
+            <i class="bi bi-sign-turn-left-fill text-danger me-1"></i>
             <span>Keluar</span>
         </a>
     </div>

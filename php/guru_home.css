@@ -176,6 +176,58 @@ a.sidebar-link:hover {
     color: #72f277;
 }
 
+#mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    max-width: 260px;
+    height: 100%;
+    background-color: #0b1915;
+    z-index: 1050;
+    transition: left 0.3s ease;
+}
+
+#mobile-sidebar.show {
+    left: 0;
+}
+
+
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100%;
+        width: 100%;
+        max-width: 260px;
+        background-color: #0b1915;
+        z-index: 1050;
+        transition: left 0.3s ease;
+    }
+
+    #sidebar.show {
+        left: 0;
+    }
+
+    .mobile-sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        display: none;
+    }
+
+    .mobile-sidebar-overlay.active {
+        display: block;
+    }
+}
+
+
+
 .navbar {
     background: rgba(255, 255, 255, 0.6);
     box-shadow: 0 0 2rem 0 rgba(33, 37, 41, 1);
@@ -302,4 +354,24 @@ footer {
     .navbar-expand .navbar-nav .dropdown-menu {
         box-shadow: 0.1rem 2rem rgba(0, 0, 0, .05);
     }
+}
+
+
+/* change the scroll bar design */
+::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 25px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #41ff99;
 }

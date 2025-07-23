@@ -2,72 +2,53 @@
 session_start();
 include("koneksi.php");
 
-$error = ""; // Variabel untuk menyimpan pesan error
+$error = "";
 $username = "";
 $password = "";
 
 if (isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-    // Validasi input
+    // Validasi input kosong
     if ($username == '' || $password == '') {
-        $error .= "<li>Silahkan masukkan username dan password.</li>";
+        $error .= "<li>Silakan masukkan username dan password.</li>";
     } else {
-        // Query untuk memeriksa username
-        $sql1 = "SELECT * FROM pengguna WHERE username = '$username'";
-        $q1 = mysqli_query($koneksi, $sql1);
+        // Cek pengguna berdasarkan username
+        $sql = "SELECT * FROM users WHERE username = ?";
+        $stmt = mysqli_prepare($koneksi, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
-        if (!$q1) {
+        if (!$result) {
             die("Query gagal: " . mysqli_error($koneksi));
         }
 
-        $r1 = mysqli_fetch_array($q1);
+        $user = mysqli_fetch_assoc($result);
 
         // Validasi username dan password
-        if (!$r1) {
-            $error .= "<li>Username <b>$username</b> tidak tersedia.</li>";
-        } elseif ($r1['password'] != md5($password)) {
-            $error .= "<li>Password yang dimasukkan tidak sesuai.</li>";
+        if (!$user) {
+            $error .= "<li>Username <b>$username</b> tidak ditemukan.</li>";
+        } elseif (!password_verify($password, $user['password'])) {
+            $error .= "<li>Password yang dimasukkan salah.</li>";
         }
 
-        // Jika tidak ada error, lanjutkan proses login
+        // Jika tidak ada error, simpan sesi
         if (empty($error)) {
-            // Simpan data pengguna ke dalam sesi
-            $_SESSION['session_username'] = $username;
-            $_SESSION['session_password'] = md5($password);
-            $id_pengguna = $r1['id_pengguna'];
+            $_SESSION['user_id'] = $user['id_user'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['name'] = $user['name'];
 
-            // Query untuk memeriksa akses pengguna
-            $sql2 = "SELECT * FROM akses WHERE id_pengguna = '$id_pengguna'";
-            $q2 = mysqli_query($koneksi, $sql2);
-
-            if (!$q2) {
-                die("Query gagal: " . mysqli_error($koneksi));
-            }
-
-            $akses = [];
-            while ($r2 = mysqli_fetch_array($q2)) {
-                $akses[] = $r2['id_master'];
-            }
-
-            // Jika tabel akses kosong, berikan akses default
-            if (empty($akses)) {
-                $akses = ['default']; // Akses default
-            }
-
-            // Simpan data akses ke dalam sesi
-            $_SESSION['admin_username'] = $username;
-            $_SESSION['id_pengguna'] = $id_pengguna;
-            $_SESSION['akses'] = $akses;
-
-            // Redirect ke halaman utama
-            header("location: halaman_utama.php");
+            header("Location: dashboard.php");
             exit();
         }
     }
 }
+
 ?>
+
 <!doctype html>
 <html lang="en">
 
@@ -95,13 +76,6 @@ if (isset($_POST['login'])) {
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon text-white"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto"> <!-- Tambahkan ms-auto di sini -->
-                    <li class="nav-item">
-                        <a class="btn btn-outline-warning me-2 mb-2" href="register.php" style="width: 90px;">Daftar</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
